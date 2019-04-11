@@ -1,123 +1,121 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
 
-const secret = require('../../config/keys').secretOrKey;
-const User = require('../../models/User');
+const secret = require("../../config/keys").secretOrKey;
+const User = require("../../models/User");
 
-const valReg = require('../../validator/register');
-const valLogin = require('../../validator/login');
+const valReg = require("../../validator/register");
+const valLogin = require("../../validator/login");
 
 //@route GET
 //@desc Test route
 //@access public
 
-router.use('/test', (req, res) => res.json({ ok: 1 }));
+router.use("/test", (req, res) => res.json({ ok: 1 }));
 
 //@route POST
 //@desc register user
 //@access public
 
-router.post('/register', (req, res) => {
-    const { errors, isValid } = valReg(req.body);
+router.post("/register", (req, res) => {
+  const { errors, isValid } = valReg(req.body);
 
-    if(!isValid) {
-        res.status(400).json(errors);
+  if (!isValid) {
+    res.status(400).json(errors);
+  }
+
+  User.findOne({ email: req.body.email }).then(data => {
+    if (data) {
+      errors.email = "Email already exists";
+      res.status(400).json(errors);
+    } else {
+      let newUser = new User({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password
+      });
+
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(newUser.password, salt, (err, hash) => {
+          if (err) throw err;
+          newUser.password = hash;
+          newUser
+            .save()
+            .then(user => res.json(user))
+            .catch(err => res.status(404).json(err));
+        });
+      });
     }
-
-    User.findOne({ email: req.body.email })
-        .then(data => {
-            if (data) {
-                errors.email = 'Email already exists'
-                res.status(400).json(errors);
-            } else {
-                let newUser = new User({
-                    name: req.body.name,
-                    email: req.body.email,
-                    password: req.body.password
-                });
-
-                bcrypt.genSalt(10, (err, salt) => {
-                    bcrypt.hash(newUser.password, salt, (err, hash) => {
-                        if (err) throw err;
-                        newUser.password = hash;
-                        newUser.save()
-                            .then(user => res.json(user))
-                            .catch(err => console.log(err))
-                    })
-                })
-            }
-        })
+  });
 });
 
 //@route POST
 //@desc register user
 //@access public
 
-router.post('/login', (req, res) => {
-    const { errors, isValid } = valLogin(req.body);
+router.post("/login", (req, res) => {
+  const { errors, isValid } = valLogin(req.body);
 
-    if(!isValid) {
-        res.status(400).json(errors);
-    }
+  if (!isValid) {
+    res.status(400).json(errors);
+  }
 
-    const email = req.body.email;
-    const password = req.body.password;
+  const email = req.body.email;
+  const password = req.body.password;
 
-    User.findOne({email})
-        .then(data => {
-            if (!data) {
-                errors.email = 'User not found';
-                res.status(404).json(errors);
-            } else {
-                bcrypt.compare(password, data.password)
-                    .then(isMatch => {
-                        if (isMatch) {
-                            const payload = {
-                                id: data.id,
-                                name: data.name,
-                                email: data.email,
-                                photo: data.photo
-                            };
+  User.findOne({ email }).then(data => {
+    if (!data) {
+      errors.email = "User not found";
+      res.status(404).json(errors);
+    } else {
+      bcrypt
+        .compare(password, data.password)
+        .then(isMatch => {
+          if (isMatch) {
+            const payload = {
+              id: data.id,
+              name: data.name,
+              email: data.email,
+              photo: data.photo
+            };
 
-                            // sign token 
-                            jwt.sign(
-                                payload, 
-                                secret, 
-                                { expiresIn: 3600 },
-                                (err, token) => {
-                                    res.json({
-                                        'success': true,
-                                        'token': 'Bearer ' + token
-                                    })
-                                }
-                            );
-                        } else {
-                            erros.password = 'Password Incorrect';
-                            res.status(400).json(erros);
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    });
-            }
+            // sign token
+            jwt.sign(payload, secret, { expiresIn: 3600 }, (err, token) => {
+              res.json({
+                success: true,
+                token: "Bearer " + token
+              });
+            });
+          } else {
+            erros.password = "Password Incorrect";
+            res.status(400).json(erros);
+          }
         })
+        .catch(err => {
+          res.status(404).json(err);
+        });
+    }
+  });
 });
 
 //@route GET
 //@desc get current user
 //@access private
 
-router.get('/current', passport.authenticate('jwt', {session:false}), (req,res) => {
+router.get(
+  "/current",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
     res.json({
-        id: req.user.id,
-        name: req.user.name,
-        email: req.user.email,
-        photo: req.user.photo
+      id: req.user.id,
+      name: req.user.name,
+      email: req.user.email,
+      photo: req.user.photo
     });
-});
-
+  }
+);
 
 module.exports = router;
