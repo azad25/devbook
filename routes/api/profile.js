@@ -10,13 +10,7 @@ const Profile = require("../../models/Profile");
 // import validator
 const valProfile = require("../../validator/profile");
 
-//@route GET
-//@desc Test route
-//@access public
-
-router.use("/test", (req, res) => res.json({ ok: 1 }));
-
-//@route GET
+//@route GET /api/profile/
 //@desc get current user profile
 //@access private
 
@@ -35,7 +29,7 @@ router.get(
   }
 );
 
-//@route GET
+//@route GET /api/profile/handle/:handle
 //@desc get user profile by handle
 //@access public
 
@@ -50,7 +44,7 @@ router.get("/handle/:handle", (req, res) => {
     .catch(err => res.status(404).json(err));
 });
 
-//@route GET
+//@route GET /api/profile/user/:user_id
 //@desc get user profile by user id
 //@access public
 
@@ -68,23 +62,20 @@ router.get("/user/:user_id", (req, res) => {
     });
 });
 
-//@route GET
+//@route GET /api/profile/all
 //@desc get all profiles
 //@access private
 
-router.get(
-  "/all",
-  (req, res) => {
-    const errors = {};
-    Profile.find()
-      .populate("user", ["name", "email"])
-      .then(profiles => {
-        errors.noprofile = "Currently no profiles";
-        !profiles ? res.status(400).json(errors) : res.json(profiles);
-      })
-      .catch(err => res.status(404).json(err));
-  }
-);
+router.get("/all", (req, res) => {
+  const errors = {};
+  Profile.find()
+    .populate("user", ["name", "email"])
+    .then(profiles => {
+      errors.noprofile = "Currently no profiles";
+      !profiles ? res.status(400).json(errors) : res.json(profiles);
+    })
+    .catch(err => res.status(404).json(err));
+});
 
 //@route POST
 //@desc create or edit profile
@@ -155,6 +146,18 @@ router.post(
         }
       })
       .catch(err => res.status(400).json(err));
+  }
+);
+
+//@route POST /api/profile/experience
+//@desc add experience
+//@access public
+
+router.post(
+  "/profile/experience",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+      
   }
 );
 

@@ -10,13 +10,7 @@ const User = require("../../models/User");
 const valReg = require("../../validator/register");
 const valLogin = require("../../validator/login");
 
-//@route GET
-//@desc Test route
-//@access public
-
-router.use("/test", (req, res) => res.json({ ok: 1 }));
-
-//@route POST
+//@route POST /api/users/register
 //@desc register user
 //@access public
 
@@ -52,7 +46,7 @@ router.post("/register", (req, res) => {
   });
 });
 
-//@route POST
+//@route POST /api/users/login
 //@desc register user
 //@access public
 
@@ -101,7 +95,7 @@ router.post("/login", (req, res) => {
   });
 });
 
-//@route GET
+//@route GET /api/users/current
 //@desc get current user
 //@access private
 
