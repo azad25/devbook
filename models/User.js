@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const schema = mongoose.Schema;
 
-const UserSchema = mongoose.model('User', new schema({
+const UserSchema = mongoose.model('users', new schema({
     name: {
         type: String,
         required: true

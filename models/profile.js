@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const ProfileSchema = mongoose.model(
-  "Profile",
+  'profiles',
   new schema({
     user: {
       type: schema.Types.ObjectId,
-      ref: "users"
+      ref: 'users'
     },
     handle: {
       type: String,
