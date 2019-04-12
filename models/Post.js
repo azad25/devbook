@@ -20,8 +20,10 @@ const PostSchema = mongoose.model(
     },
     like: [
       {
-        type: schema.Types.ObjectId,
-        ref: "users"
+        user: {
+          type: schema.Types.ObjectId,
+          ref: "users"
+        }
       }
     ],
     comments: [
@@ -30,7 +32,7 @@ const PostSchema = mongoose.model(
           type: schema.Types.ObjectId,
           ref: "users"
         },
-        comment: {
+        text: {
           type: String,
           required: true
         },
