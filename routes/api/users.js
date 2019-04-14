@@ -84,12 +84,13 @@ router.post("/login", (req, res) => {
               });
             });
           } else {
-            erros.password = "Password Incorrect";
+            errors.password = "Password Incorrect";
             res.status(400).json(erros);
           }
         })
         .catch(err => {
-          res.status(404).json(err);
+          errors.notfound = "not found error";
+          res.status(404).json(errors);
         });
     }
   });
