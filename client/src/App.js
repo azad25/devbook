@@ -17,6 +17,7 @@ import Footer from "./components/layout/Footer";
 import Login from "./components/layout/auth/Login";
 import Register from "./components/layout/auth/Register";
 import Dashboard from "./components/layout/auth/Dashboard";
+import CreateProfile from "./components/create-profile/CreateProfile";
 
 // check for token
 
@@ -56,6 +57,9 @@ class App extends Component {
             />
             <Switch>
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
+            </Switch>
+            <Switch>
+              <PrivateRoute exact path="/create-profile" component={CreateProfile} />
             </Switch>
             <Footer />
           </div>
