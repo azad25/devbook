@@ -23,6 +23,10 @@ class Login extends Component {
     nextProps.errors && this.setState({ errors: nextProps.errors });
   }
 
+  componentWillMount() {
+    this.props.isAuthenticated && this.props.history.push("/dashboard");
+  }
+
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
