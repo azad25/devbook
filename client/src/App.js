@@ -18,6 +18,7 @@ import Login from "./components/layout/auth/Login";
 import Register from "./components/layout/auth/Register";
 import Dashboard from "./components/layout/auth/Dashboard";
 import CreateProfile from "./components/create-profile/CreateProfile";
+import NotFound from "./components/layout/404/NotFound";
 
 // check for token
 
@@ -60,6 +61,9 @@ class App extends Component {
             </Switch>
             <Switch>
               <PrivateRoute exact path="/create-profile" component={CreateProfile} />
+            </Switch>
+            <Switch>
+              <Route component={NotFound} />
             </Switch>
             <Footer />
           </div>
