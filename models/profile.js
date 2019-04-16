@@ -36,9 +36,6 @@ const ProfileSchema = mongoose.model(
     githubUsername: {
       type: String
     },
-    linkedinUsername: {
-      type: String
-    },
     experience: [
       {
         title: {

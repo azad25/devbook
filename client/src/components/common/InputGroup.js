@@ -28,7 +28,7 @@ const InputGroup = ({
         value={value}
         onChange={onChange}
       />
-      {error && <div className="invalid-feedback">{error}</div>}
+      {error && <div className="invalid-feedback"><i className="fas fa-lightbulb text-primary" style={{color:'#f1c40f'}}></i> {error}</div>}
     </div>
   );
 };

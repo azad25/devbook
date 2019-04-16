@@ -33,8 +33,8 @@ if (localStorage.jwt) {
   const currentTime = Date.now() / 1000;
   if (decoded.exp < currentTime) {
     // log out user after token expiration
-    store.dispatch(logoutUser());
     store.dispatch(clearCurrentProfile());
+    store.dispatch(logoutUser());
   }
 }
 
