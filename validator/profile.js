@@ -15,9 +15,12 @@ module.exports = validateProfileInput = data => {
 
   if (!validator.isLength(data.handle, { min: 2, max: 30 }))
     errors.handle = "handle must be in between 2 and 40 characters";
+
   if (validator.isEmpty(data.handle)) errors.handle = "Handle is required";
   if (validator.isEmpty(data.skills)) errors.skills = "Skill required";
   if (validator.isEmpty(data.status)) errors.status = "Status required";
+  if (validator.isEmpty(data.location)) errors.location = "Location required";
+
   if (!validator.isEmpty(data.website)) {
     if (!validator.isURL(data.website)) errors.website = "Website in invalid";
   }

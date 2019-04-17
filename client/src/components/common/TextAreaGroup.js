@@ -22,7 +22,7 @@ const TextAreaGroup = ({
         onChange={onChange}
       />
       {info && <small className="form-text text-muted"><i className="fas fa-lightbulb text-primary"></i> {info}</small>}
-      {error && <div className="invalid-feedback">{error}</div>}
+      {error && <div className="invalid-feedback"><i className="fas fa-exclamation-triangle"></i> {error}</div>}
     </div>
   );
 };

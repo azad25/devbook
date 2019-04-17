@@ -105,7 +105,7 @@ router.post(
 
     if (req.body.skills) {
       if (typeof req.body.skills !== "undefined") {
-        fields.skills = req.body.skills.split(",");
+        fields.skills = req.body.skills;
       }
     }
 

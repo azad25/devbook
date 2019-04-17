@@ -29,22 +29,38 @@ class TagInput extends Component {
         { id: "F#", text: "F#" },
         { id: "ASP.NET", text: "ASP.NET" }
       ],
-      info: this.props.info
+      info: this.props.info,
+      error: this.props.error
     };
     this.handleDelete = this.handleDelete.bind(this);
     this.handleAddition = this.handleAddition.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
+    this.update = this.update.bind(this);
+  }
+
+  update(val) {
+    this.props.setTagInput(val);
   }
 
   handleDelete(i) {
     const { tags } = this.state;
-    this.setState({
-      tags: tags.filter((tag, index) => index !== i)
-    });
+    this.setState(
+      {
+        tags: tags.filter((tag, index) => index !== i)
+      },
+      () => {
+        this.update(this.state.tags);
+      }
+    );
   }
 
   handleAddition(tag) {
-    this.setState(state => ({ tags: [...state.tags, tag] }));
+    this.setState(
+      state => ({ tags: [...state.tags, tag] }),
+      () => {
+        this.update(this.state.tags);
+      }
+    );
   }
 
   handleDrag(tag, currPos, newPos) {
@@ -55,27 +71,46 @@ class TagInput extends Component {
     newTags.splice(newPos, 0, tag);
 
     // re-render
-    this.setState({ tags: newTags });
+    this.setState({ tags: newTags }, () => {
+      this.update(this.state.tags);
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error) {
+      this.setState({
+        error: nextProps.error
+      });
+    }
   }
 
   render() {
-    const { tags, suggestions, info } = this.state;
+    const { tags, suggestions, info, error } = this.state;
     return (
       <div className="form-group">
-          <ReactTags
-            classNames={{
-              tagInputField: "form-control form-control-lg",
-              tag: "badge badge-primary mx-1 my-2"
-            }}
-            tags={tags}
-            placeholder="Add your skills"
-            suggestions={suggestions}
-            handleDelete={this.handleDelete}
-            handleAddition={this.handleAddition}
-            handleDrag={this.handleDrag}
-            delimiters={delimiters}
-          />
-        {info && <small className="form-text text-muted mt-2"><i className="fas fa-lightbulb text-primary"></i> {info}</small>}
+        <ReactTags
+          classNames={{
+            tagInputField: "form-control form-control-lg",
+            tag: "badge badge-primary mx-1 my-2"
+          }}
+          tags={tags}
+          placeholder="Add your skills"
+          suggestions={suggestions}
+          handleDelete={this.handleDelete}
+          handleAddition={this.handleAddition}
+          handleDrag={this.handleDrag}
+          delimiters={delimiters}
+        />
+        {info && (
+          <small className="form-text text-muted mt-2">
+            <i className="fas fa-lightbulb text-primary" /> {info}
+          </small>
+        )}
+        {error && (
+          <div className="invalid-feedback" style={{display:"block"}}>
+            <i className="fas fa-exclamation-triangle" /> {error}
+          </div>
+        )}
       </div>
     );
   }

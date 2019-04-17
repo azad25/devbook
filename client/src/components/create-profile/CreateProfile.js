@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaGroup from "../common/TextAreaGroup";
@@ -7,6 +8,8 @@ import SelectListGroup from "../common/SelectListGroup";
 import InputGroup from "../common/InputGroup";
 import AutoSuggestion from "../common/AutoSuggestion";
 import TagInput from "../common/TagInput";
+
+import { createProfile } from "../../actions/profileActions";
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -19,7 +22,7 @@ class CreateProfile extends Component {
       website: "",
       location: "",
       status: "",
-      skills: "",
+      skills: {},
       githubUsername: "",
       bio: "",
       twitter: "",
@@ -31,13 +34,52 @@ class CreateProfile extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.setTagInput = this.setTagInput.bind(this);
+    this.setLocation = this.setLocation.bind(this);
   }
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.errors) {
+      this.setState({
+        errors: nextProps.errors
+      });
+    }
+  }
   onSubmit(e) {
     e.preventDefault();
-    console.log("submit");
+
+    const profileData = {
+      handle: this.state.handle,
+      company: this.state.company,
+      website: this.state.website,
+      location: this.state.location,
+      status: this.state.status,
+      skills: this.state.skills,
+      githubusername: this.state.githubusername,
+      bio: this.state.bio,
+      twitter: this.state.twitter,
+      facebook: this.state.facebook,
+      linkedin: this.state.linkedin,
+      youtube: this.state.youtube,
+      instagram: this.state.instagram
+    };
+
+    console.log(profileData);
+
+    this.props.createProfile(profileData);
+  }
+  setTagInput(data) {
+    this.setState({
+      skills: data
+    });
+  }
+  setLocation(data) {
+    this.setState({
+      location: data
+    });
   }
   render() {
     const { errors, displaySocialInput } = this.state;
@@ -51,7 +93,7 @@ class CreateProfile extends Component {
             name="Twitter"
             icon="fab fa-twitter"
             value={this.state.twitter}
-            onChange={this.onChange}
+            onTagInput={this.getTagInput}
             error={errors.twitter}
           />
 
@@ -84,7 +126,7 @@ class CreateProfile extends Component {
         </div>
       );
     } else {
-      socialInput="";
+      socialInput = "";
     }
     // Select options for status
     const options = [
@@ -140,19 +182,19 @@ class CreateProfile extends Component {
                   info="Tell us where do you work"
                 />
 
-                <TextFieldGroup
-                  placeholder="Profile Handle"
-                  name="handle"
-                  type="text"
-                  value={this.state.handle}
-                  onChange={this.onChange}
-                  error={errors.handle}
-                  info="A unique name for your profile url. It can be your name/company or nickname"
+                <AutoSuggestion
+                  name="Location"
+                  info="Tell us your city"
+                  setLocation={this.setLocation}
+                  error={errors.location}
                 />
 
-                <AutoSuggestion name="Location" info="Tell us your city" />
-
-                <TagInput name="skills" info="Tell us your skills" />
+                <TagInput
+                  name="skills"
+                  setTagInput={this.setTagInput}
+                  info="Tell us your skills"
+                  error={errors.skills}
+                />
 
                 <TextFieldGroup
                   placeholder="Github"
@@ -213,4 +255,7 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(mapStateToProps)(CreateProfile);
+export default connect(
+  mapStateToProps,
+  {createProfile}
+)(withRouter(CreateProfile));

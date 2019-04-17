@@ -20,8 +20,21 @@ const SelectListGroup = ({ name, value, error, info, options, onChange }) => {
       >
         {selectOptions}
       </select>
-      {info && <small className="form-text text-muted">{info}</small>}
-      {error && <div className="invalid-feedback">{error}</div>}
+      {info && (
+        <small className="form-text text-muted">
+          {" "}
+          <i
+            className="fas fa-lightbulb text-primary"
+            style={{ color: "#f1c40f" }}
+          />{" "}
+          {info}
+        </small>
+      )}
+      {error && (
+        <div className="invalid-feedback">
+          <i className="fas fa-exclamation-triangle" /> {error}
+        </div>
+      )}
     </div>
   );
 };

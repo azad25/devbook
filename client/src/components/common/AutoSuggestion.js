@@ -23,21 +23,25 @@ class AutoSuggestion extends Component {
       suggestions: [],
       disabled: false,
       color: "#495057",
-      info: this.props.info
+      info: this.props.info,
+      error: this.props.error
     };
   }
 
-  onChange = (event, { newValue, method }) => {
+  onChange = (event, { newValue }) => {
     this.setState({
       value: newValue,
       color: "#007bff"
     });
+    this.props.setLocation(newValue);
   };
 
   getSuggestionValue = suggestion => {
+    let loc = suggestion.name + "," + suggestion.country;
     this.setState({
       disabled: true,
-      color: "#007bff"
+      color: "#007bff",
+      value: loc
     });
     return suggestion.name + "," + suggestion.country;
   };
@@ -46,9 +50,9 @@ class AutoSuggestion extends Component {
     return suggestion.name + "," + suggestion.country;
   };
 
-  shouldRenderSuggestions =(value) => {
+  shouldRenderSuggestions = value => {
     return value.trim().length > 2;
-  }
+  };
 
   onSuggestionsFetchRequested = ({ value }) => {
     this.setState({
@@ -63,21 +67,36 @@ class AutoSuggestion extends Component {
   };
 
   onSuggestionSelected = (event, { suggestion }) => {
+    let loc = suggestion.name + "," + suggestion.country;
     this.setState({
-      color: "#007bff"
+      color: "#007bff",
+      value: loc
     });
+    this.props.setLocation(loc);
   };
 
   onClick = e => {
     e.preventDefault();
-    this.setState({
-      value: "",
-      disabled: false,
-      color: "#495057"
-    });
+    this.setState(
+      {
+        value: "",
+        disabled: false,
+        color: "#495057"
+      },
+      () => {
+        this.props.setLocation(this.state.value);
+      }
+    );
   };
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error) {
+      this.setState({
+        error: nextProps.error
+      });
+    }
+  }
   render() {
-    const { value, suggestions, info } = this.state;
+    const { value, suggestions, info, error } = this.state;
     const inputProps = {
       name: this.state.name,
       placeholder: "Add Location",
@@ -99,18 +118,32 @@ class AutoSuggestion extends Component {
             </span>
           </div>
           <Autosuggest
+            onSuggestionSelected={this.onSuggestionSelected}
             suggestions={suggestions}
             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
             shouldRenderSuggestions={this.shouldRenderSuggestions}
             getSuggestionValue={this.getSuggestionValue}
             renderSuggestion={this.renderSuggestion}
-            onSuggestionSelected={this.onSuggestionSelected}
             inputProps={inputProps}
             highlightFirstSuggestion={true}
+            onChange={this.onChange}
           />
         </div>
-        {info && <small className="form-text text-muted"><i className="fas fa-lightbulb text-primary" style={{color:'#f1c40f'}}></i> {info}</small>}
+        {info && (
+          <small className="form-text text-muted">
+            <i
+              className="fas fa-lightbulb text-primary"
+              style={{ color: "#f1c40f" }}
+            />{" "}
+            {info}
+          </small>
+        )}
+        {error && (
+          <div className="invalid-feedback" style={{display:"block"}}>
+            <i className="fas fa-exclamation-triangle" /> {error}
+          </div>
+        )}
       </div>
     );
   }
