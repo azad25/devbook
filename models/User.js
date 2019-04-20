@@ -14,10 +14,6 @@ const UserSchema = mongoose.model('users', new schema({
         type: String,
         required: true
     },
-    photo: {
-        type: String,
-        default:'profile.png'
-    },
     date: {
         type: Date,
         default: Date.now

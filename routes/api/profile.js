@@ -1,7 +1,40 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
 const passport = require("passport");
+const multer = require("multer");
+const path = require("path");
+
+var fs = require("fs");
+
+var storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "public");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+var upload = multer({
+  storage: storage,
+  fileFilter: function(req, file, callback) {
+    if (req.file) {
+      var ext = path.extname(file.originalname.toLowerCase());
+      if (
+        ext !== ".png" &&
+        ext !== ".jpg" &&
+        ext !== ".gif" &&
+        ext !== ".jpeg"
+      ) {
+        return callback(new Error("Only images are allowed"));
+      }
+      callback(null, true);
+    }
+  },
+  limits: {
+    fileSize: 2 * 1024 * 1024
+  }
+});
 
 // import models
 const User = require("../../models/User");
@@ -85,69 +118,92 @@ router.get("/all", (req, res) => {
 
 router.post(
   "/",
-  passport.authenticate("jwt", { session: false }),
+  [
+    passport.authenticate("jwt", { session: false }), upload.any()
+  ],
   (req, res) => {
-    let { errors, isValid } = valProfile(req.body);
-    let fields = {};
+    // let { errors, isValid } = valProfile(req.body);
+    // let fields = {};
 
-    if (!isValid) {
-      res.status(400).json(errors);
-    }
+    // if (!isValid) {
+    //   res.status(400).json(errors);
+    // }
 
-    fields.user = req.user.id;
+    res.status(200).json({ ok: true });
 
-    if (req.body.handle) fields.handle = req.body.handle;
-    if (req.body.company) fields.company = req.body.company;
-    if (req.body.website) fields.website = req.body.website;
-    if (req.body.bio) fields.bio = req.body.bio;
-    if (req.body.location) fields.location = req.body.location;
-    if (req.body.status) fields.status = req.body.status;
+    // fields.user = req.user.id;
 
-    if (req.body.skills) {
-      if (typeof req.body.skills !== "undefined") {
-        fields.skills = req.body.skills;
-      }
-    }
+    // if (req.body.handle) fields.handle = req.body.handle;
+    // if (req.body.company) fields.company = req.body.company;
+    // if (req.body.website) fields.website = req.body.website;
+    // if (req.body.bio) fields.bio = req.body.bio;
+    // if (req.body.location) fields.location = req.body.location;
+    // if (req.body.status) fields.status = req.body.status;
 
-    if (req.body.githubusername)
-      fields.githubusername = req.body.githubusername;
-    if (req.body.linkedinUsername)
-      fields.linkedinUsername = req.body.linkedinUsername;
+    // if (req.body.skills) {
+    //   if (typeof req.body.skills !== "undefined") {
+    //     fields.skills = req.body.skills;
+    //   }
+    // }
 
-    if (req.body.experience) fields.experience = req.body.experience;
-    if (req.body.education) fields.education = req.body.education;
+    // if (req.body.githubusername)
+    //   fields.githubusername = req.body.githubusername;
+    // if (req.body.linkedinUsername)
+    //   fields.linkedinUsername = req.body.linkedinUsername;
 
-    fields.social = {};
+    // if (req.body.experience) fields.experience = req.body.experience;
+    // if (req.body.education) fields.education = req.body.education;
 
-    if (req.body.facebook) fields.social.facebook = req.body.facebook;
-    if (req.body.twitter) fields.social.twitter = req.body.twitter;
-    if (req.body.linkedIn) fields.social.linkedIn = req.body.linkedIn;
-    if (req.body.instagram) fields.social.instagram = req.body.instagram;
+    // fields.social = {};
+    // fields.photo = {};
 
-    Profile.findOne({ user: req.user.id })
-      .populate("user", ["name", "email"])
-      .then(profile => {
-        if (profile) {
-          Profile.findOneAndUpdate(
-            { user: req.user.id },
-            { $set: fields },
-            { new: true }
-          ).then(profile => res.json(profile));
-        } else {
-          Profile.findOne({ handle: req.body.handle })
-            .populate("user", ["name", "email"])
-            .then(profile => {
-              if (profile) {
-                errors.handle = "Handle already exists";
-                res.status(400).json();
-              } else {
-                new Profile(fields).save().then(profile => res.json(profile));
-              }
-            })
-            .catch(err => res.status(400).json(err));
-        }
-      })
-      .catch(err => res.status(400).json(err));
+    // if (req.body.facebook) fields.social.facebook = req.body.facebook;
+    // if (req.body.twitter) fields.social.twitter = req.body.twitter;
+    // if (req.body.linkedIn) fields.social.linkedIn = req.body.linkedIn;
+    // if (req.body.instagram) fields.social.instagram = req.body.instagram;
+
+    // const file = req.file;
+    // if (!file) {
+    //   const error = new Error("Please choose files");
+    //   error.httpStatusCode = 400;
+    // } else {
+    //   var img = fs.readFileSync(req.file.path, "base64");
+    //   var finalImg = {
+    //     contentType: req.file.mimetype,
+    //     image: new Buffer.from(img, "base64"),
+    //     path: req.file.path
+    //   };
+    //   fields.photo = finalImg;
+    // }
+
+    // Profile.findOne({ user: req.user.id })
+    //   .populate("user", ["name", "email"])
+    //   .then(profile => {
+    //     if (profile) {
+    //       Profile.findOneAndUpdate(
+    //         { user: req.user.id },
+    //         { $set: fields },
+    //         { new: true }
+    //       ).then(profile => res.status(200).json(profile))
+    //       .catch(err => res.status(400).json(err));
+    //     } else {
+    //       Profile.findOne({ handle: req.body.handle })
+    //         .populate("user", ["name", "email"])
+    //         .then(profile => {
+    //           if (profile) {
+    //             errors.handle = "Handle already exists";
+    //             res.status(400).json();
+    //           } else {
+    //             new Profile(fields)
+    //               .save()
+    //               .then(profile => res.status(200).json(profile))
+    //               .catch(err => res.status(400).json(err));
+    //           }
+    //         })
+    //         .catch(err => res.status(400).json(err));
+    //     }
+    //   })
+    //   .catch(err => res.status(400).json(err));
   }
 );
 

@@ -5,8 +5,8 @@ module.exports = validateProfileInput = data => {
   let errors = {};
 
   data.handle = !is_empty(data.handle) ? data.handle : "";
+  data.location = !is_empty(data.location) ? data.location : "";
   data.status = !is_empty(data.status) ? data.status : "";
-  data.skills = !is_empty(data.skills) ? data.skills : "";
   data.website = !is_empty(data.website) ? data.website : "";
   data.facebook = !is_empty(data.facebook) ? data.facebook : "";
   data.twitter = !is_empty(data.twitter) ? data.twitter : "";
@@ -17,7 +17,7 @@ module.exports = validateProfileInput = data => {
     errors.handle = "handle must be in between 2 and 40 characters";
 
   if (validator.isEmpty(data.handle)) errors.handle = "Handle is required";
-  if (validator.isEmpty(data.skills)) errors.skills = "Skill required";
+  if (data.skills.length === 0) errors.skills = "Skill required";
   if (validator.isEmpty(data.status)) errors.status = "Status required";
   if (validator.isEmpty(data.location)) errors.location = "Location required";
 

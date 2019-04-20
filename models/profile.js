@@ -8,6 +8,11 @@ const ProfileSchema = mongoose.model(
       type: schema.Types.ObjectId,
       ref: 'users'
     },
+    photo: {
+      image: Buffer,
+      contentType: String,
+      path: String
+    },
     handle: {
       type: String,
       required: true,

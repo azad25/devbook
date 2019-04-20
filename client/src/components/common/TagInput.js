@@ -38,8 +38,8 @@ class TagInput extends Component {
     this.update = this.update.bind(this);
   }
 
-  update(val) {
-    this.props.setTagInput(val);
+  update(data) {
+    this.props.setTagInput(data.map(o => o.text));
   }
 
   handleDelete(i) {
@@ -107,7 +107,7 @@ class TagInput extends Component {
           </small>
         )}
         {error && (
-          <div className="invalid-feedback" style={{display:"block"}}>
+          <div className="invalid-feedback" style={{ display: "block" }}>
             <i className="fas fa-exclamation-triangle" /> {error}
           </div>
         )}

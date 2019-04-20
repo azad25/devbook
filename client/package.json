@@ -6,6 +6,7 @@
     "axios": "^0.18.0",
     "cities.json": "^1.1.5",
     "classnames": "^2.2.6",
+    "connected-react-router": "^6.4.0",
     "jwt-decode": "^2.2.0",
     "react": "^16.8.6",
     "react-autosuggest": "^9.4.3",
@@ -17,6 +18,7 @@
     "react-scripts": "2.1.8",
     "react-tag-input": "^6.4.0",
     "redux": "^4.0.1",
+    "redux-file-upload": "0.0.19",
     "redux-thunk": "^2.3.0",
     "typed.js": "^2.0.10"
   },

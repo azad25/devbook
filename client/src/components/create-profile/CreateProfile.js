@@ -22,13 +22,14 @@ class CreateProfile extends Component {
       website: "",
       location: "",
       status: "",
-      skills: {},
+      skills: [],
       githubUsername: "",
       bio: "",
       twitter: "",
       facebook: "",
       linkedIn: "",
       instagram: "",
+      photo: {},
       errors: {}
     };
 
@@ -48,29 +49,6 @@ class CreateProfile extends Component {
       });
     }
   }
-  onSubmit(e) {
-    e.preventDefault();
-
-    const profileData = {
-      handle: this.state.handle,
-      company: this.state.company,
-      website: this.state.website,
-      location: this.state.location,
-      status: this.state.status,
-      skills: this.state.skills,
-      githubusername: this.state.githubusername,
-      bio: this.state.bio,
-      twitter: this.state.twitter,
-      facebook: this.state.facebook,
-      linkedin: this.state.linkedin,
-      youtube: this.state.youtube,
-      instagram: this.state.instagram
-    };
-
-    console.log(profileData);
-
-    this.props.createProfile(profileData);
-  }
   setTagInput(data) {
     this.setState({
       skills: data
@@ -80,6 +58,33 @@ class CreateProfile extends Component {
     this.setState({
       location: data
     });
+  }
+
+  fileEventHandler = e => {
+    this.setState({
+      photo: e.target.files[0]
+    }, () => {});
+  };
+  onSubmit(e) {
+    e.preventDefault();
+
+    let data = new FormData();
+    data.append("handle", this.state.handle);
+    data.append("company", this.state.company);
+    data.append("website", this.state.website);
+    data.append("location", this.state.location);
+    data.append("status", this.state.status);
+    data.append("githubUsername", this.state.githubUsername);
+    data.append("skills", this.state.skills);
+    data.append("bio", this.state.bio);
+    data.append("twitter", this.state.twitter);
+    data.append("facebook", this.state.facebook);
+    data.append("linkedIn", this.state.linkedIn);
+    data.append("instagram", this.state.instagram);
+
+    data.append("photo", this.state.photo);
+    
+    this.props.createProfile(data);
   }
   render() {
     const { errors, displaySocialInput } = this.state;
@@ -152,6 +157,29 @@ class CreateProfile extends Component {
               </p>
               <small className="d-block pb-3">* = required fields</small>
               <form onSubmit={this.onSubmit}>
+                <div className="form-group">
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      name="photo"
+                      className="custom-file-input form-control form-control-lg"
+                      onChange={this.fileEventHandler}
+                    />
+                    <label className="custom-file-label">
+                      Select Profile Picture
+                    </label>
+                    <small className="form-text text-muted">
+                      <i className="fas fa-lightbulb text-primary" /> Upload
+                      Profile Photo
+                    </small>
+                    {errors.photo && (
+                      <div className="invalid-feedback">
+                        <i className="fas fa-exclamation-triangle" />{" "}
+                        {errors.photo}
+                      </div>
+                    )}
+                  </div>
+                </div>
                 <TextFieldGroup
                   placeholder="Profile Handle"
                   name="handle"
@@ -257,5 +285,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  {createProfile}
+  { createProfile }
 )(withRouter(CreateProfile));
