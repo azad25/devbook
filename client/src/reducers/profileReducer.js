@@ -2,6 +2,7 @@ import {
   GET_PROFILE,
   PROFILE_LOADING,
   SET_PROFILE_PHOTO,
+  SET_NAVBAR_PROFILE_PHOTO,
   CLEAR_CURRENT_PROFILE
 } from "../actions/types";
 
@@ -28,6 +29,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         photo: action.payload,
+        loading: false
+      };
+    case SET_NAVBAR_PROFILE_PHOTO:
+      return {
+        ...state,
+        profilePhoto: action.payload,
         loading: false
       };
     case CLEAR_CURRENT_PROFILE:

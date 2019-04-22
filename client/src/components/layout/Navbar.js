@@ -4,9 +4,22 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { logoutUser } from "../../actions/authActions";
-import { clearCurrentProfile } from "../../actions/profileActions";
+import {
+  getProfilePhoto,
+  clearCurrentProfile
+} from "../../actions/profileActions";
 
 class Navbar extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      img: ""
+    };
+  }
+  componentWillMount(){
+    this.props.getProfilePhoto();
+  }
   onLogoutClick(e) {
     e.preventDefault();
     this.props.clearCurrentProfile();
@@ -15,7 +28,11 @@ class Navbar extends Component {
   render() {
     const { isAuthenticated, user } = this.props.auth;
     const link = "";
-    
+
+    let newImg = this.props.getProfilePhotoPath
+      ? this.props.getProfilePhotoPath
+      : "profile.png";
+
     const authLinks = (
       <ul className="navbar-nav ml-auto">
         <li className="nav-item">
@@ -26,7 +43,7 @@ class Navbar extends Component {
           >
             <img
               className="rounded-circle"
-              src={`/profile/${user.photo}`}
+              src={`/uploads/${newImg}`}
               alt={user.name}
               style={{ width: "25px", marginRight: "5px" }}
             />
@@ -85,15 +102,17 @@ class Navbar extends Component {
 }
 
 Navbar.propTypes = {
+  getProfilePhotoPath: PropTypes.string,
   logoutUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  auth: state.auth
+  auth: state.auth,
+  getProfilePhotoPath: state.profile.profilePhoto
 });
 
 export default connect(
   mapStateToProps,
-  { logoutUser, clearCurrentProfile }
+  { logoutUser, clearCurrentProfile, getProfilePhoto }
 )(withRouter(Navbar));

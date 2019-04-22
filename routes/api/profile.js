@@ -17,21 +17,16 @@ var storage = multer.diskStorage({
 var upload = multer({
   storage: storage,
   fileFilter: function(req, file, callback) {
-      var ext = path.extname(file.originalname.toLowerCase());
-      if (
-        ext !== ".png" &&
-        ext !== ".jpg" &&
-        ext !== ".gif" &&
-        ext !== ".jpeg"
-      ) {
-        return callback(new Error("Only images are allowed"));
-      }
-      callback(null, true);
+    var ext = path.extname(file.originalname.toLowerCase());
+    if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg") {
+      return callback(new Error("Only images are allowed"));
+    }
+    callback(null, true);
   },
   limits: {
     fileSize: 2 * 1024 * 1024
   }
-}).single('photo');
+}).single("photo");
 
 // import models
 const User = require("../../models/User");
@@ -164,7 +159,10 @@ router.post(
             { user: req.user.id },
             { $set: fields },
             { new: true }
-          ).then(profile => res.status(200).json(profile));
+          ).then(profile => {
+            profile.photo = {};
+            res.status(200).json(profile);
+          });
         } else {
           Profile.findOne({ handle: req.body.handle })
             .populate("user", ["name", "email"])
@@ -173,9 +171,10 @@ router.post(
                 errors.handle = "Handle already exists";
                 res.status(400).json();
               } else {
-                new Profile(fields)
-                  .save()
-                  .then(profile => res.status(200).json(profile));
+                new Profile(fields).save().then(profile => {
+                  profile.photo = {};
+                  res.status(200).json(profile);
+                });
               }
             })
             .catch(err => res.status(400).json(err));
@@ -193,13 +192,12 @@ router.post(
   "/upload",
   [passport.authenticate("jwt", { session: false }), upload],
   (req, res) => {
-
     const file = req.file;
 
     if (!file) {
       const errors = {
         photo: "File not found"
-      }
+      };
       res.status(404).json(errors);
     } else {
       var img = fs.readFileSync(req.file.path, "base64");
@@ -210,6 +208,26 @@ router.post(
       };
       res.status(200).send(finalImg);
     }
+  }
+);
+
+//@route GET /api/profile/photo
+//@desc upload profile photo
+//@access private
+
+router.get(
+  "/photo",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findOne({ user: req.user.id })
+      .then(profile => {
+        if (profile.photo) {
+          res.status(200).json({ path: profile.photo.path });
+        } else {
+          res.status(200).json({ photo: "No photo found" });
+        }
+      })
+      .catch(err => res.status(400).json(err));
   }
 );
 

@@ -3,6 +3,7 @@ import {
   GET_PROFILE,
   PROFILE_LOADING,
   SET_PROFILE_PHOTO,
+  SET_NAVBAR_PROFILE_PHOTO,
   CLEAR_CURRENT_PROFILE,
   GET_ERRORS
 } from "./types";
@@ -42,8 +43,8 @@ export const createProfile = (profileData, history) => dispatch => {
     .catch(err => {
       let errors = null;
       if (err.response.data) {
-        errors = err.response.data
-      }else{
+        errors = err.response.data;
+      } else {
         errors = err;
       }
       dispatch({
@@ -58,14 +59,36 @@ export const createProfile = (profileData, history) => dispatch => {
 export const uploadPhoto = photo => dispatch => {
   axios
     .post("/api/profile/upload", photo)
-    .then(res => dispatch({
-      type: SET_PROFILE_PHOTO,
-      payload: res.data
-    }))
+    .then(res =>
+      dispatch({
+        type: SET_PROFILE_PHOTO,
+        payload: res.data
+      })
+    )
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
         payload: err.response.data
+      })
+    );
+};
+
+//get profile photo
+
+export const getProfilePhoto = () => dispatch => {
+  axios
+    .get("/api/profile/photo")
+    .then(res => {
+      let data = res.data.path.replace(/public\\uploads\\/g, "");
+      dispatch({
+        type: SET_NAVBAR_PROFILE_PHOTO,
+        payload: data
+      });
+    })
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err
       })
     );
 };
