@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { ConnectedRouter } from "connected-react-router";
-import configureStore, { history } from "./store";
-import { BrowserRouter,Route, Switch} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import jwt_decode from "jwt-decode";
 import setAuthToken from "./utils/setAuthToken";
 import { setCurrentUser, logoutUser } from "./actions/authActions";
 import { clearCurrentProfile } from "./actions/profileActions";
 
+import store from "./store";
 import "./App.css";
 
 import PrivateRoute from "./components/common/PrivateRoute";
@@ -20,8 +19,6 @@ import Register from "./components/layout/auth/Register";
 import Dashboard from "./components/layout/auth/Dashboard";
 import CreateProfile from "./components/create-profile/CreateProfile";
 import NotFound from "./components/layout/404/NotFound";
-
-const store = configureStore();
 
 // check for token
 
@@ -36,8 +33,8 @@ if (localStorage.jwt) {
   const currentTime = Date.now() / 1000;
   if (decoded.exp < currentTime) {
     // log out user after token expiration
-    store.dispatch(logoutUser());
     store.dispatch(clearCurrentProfile());
+    store.dispatch(logoutUser());
   }
 }
 
@@ -45,35 +42,35 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <ConnectedRouter history={history}>
-            <div className="App">
-              <Navbar />
-              <Switch>
-                <Route
-                  exact
-                  path="/"
-                  component={props => <Landing {...props} />}
-                />
-                <Route
-                  exact
-                  path="/login"
-                  component={props => <Login {...props} />}
-                />
-                <Route
-                  exact
-                  path="/register"
-                  component={props => <Register {...props} />}
-                />
-                <PrivateRoute exact path="/dashboard" component={Dashboard} />
-                <PrivateRoute
-                  path="/create-profile"
-                  component={CreateProfile}
-                />
-                <Route component={NotFound} />
-              </Switch>
-              <Footer />
-            </div>
-        </ConnectedRouter>
+        <Router>
+          <div className="App">
+            <Navbar />
+            <Switch>
+              <Route
+                exact
+                path="/"
+                component={props => <Landing {...props} />}
+              />
+              <Route
+                exact
+                path="/login"
+                component={props => <Login {...props} />}
+              />
+              <Route
+                exact
+                path="/register"
+                component={props => <Register {...props} />}
+              />
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <PrivateRoute
+                path="/create-profile"
+                component={CreateProfile}
+              />
+              <Route component={NotFound} />
+            </Switch>
+            <Footer />
+          </div>
+        </Router>
       </Provider>
     );
   }

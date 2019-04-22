@@ -4,8 +4,6 @@ const passport = require("passport");
 const multer = require("multer");
 const path = require("path");
 
-var fs = require("fs");
-
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "public");
@@ -118,9 +116,7 @@ router.get("/all", (req, res) => {
 
 router.post(
   "/",
-  [
-    passport.authenticate("jwt", { session: false }), upload.any()
-  ],
+  passport.authenticate("jwt", { session: false }),
   (req, res) => {
     // let { errors, isValid } = valProfile(req.body);
     // let fields = {};

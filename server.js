@@ -7,7 +7,7 @@ const cors = require("cors");
 
 // public folder
 const app = express();
-app.use(cors());
+//app.use(cors());
 //app.use(express.static(('./public')));
 
 const users = require("./routes/api/users");

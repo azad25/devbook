@@ -100,6 +100,7 @@ class TagInput extends Component {
           handleAddition={this.handleAddition}
           handleDrag={this.handleDrag}
           delimiters={delimiters}
+          autofocus={false}
         />
         {info && (
           <small className="form-text text-muted mt-2">

@@ -38,18 +38,18 @@ export const createProfile = (profileData, history) => dispatch => {
   axios
     .post("/api/profile", profileData)
     .then(() => history.push("/dashboard"))
-    // .catch(err => {
-    //   let errors = null;
-    //   if (err.response.data) {
-    //     errors = err.response.data
-    //   }else{
-    //     errors = err;
-    //   }
-    //   dispatch({
-    //     type: GET_ERRORS,
-    //     payload: errors
-    //   });
-    // });
+    .catch(err => {
+      let errors = null;
+      if (err.response.data) {
+        errors = err.response.data
+      }else{
+        errors = err;
+      }
+      dispatch({
+        type: GET_ERRORS,
+        payload: errors
+      });
+    });
 };
 
 // clear profile
