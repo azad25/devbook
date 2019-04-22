@@ -1,11 +1,14 @@
 import axios from "axios";
 import {
+  SET_CURRENT_USER,
   GET_PROFILE,
   PROFILE_LOADING,
   SET_PROFILE_PHOTO,
   SET_NAVBAR_PROFILE_PHOTO,
   CLEAR_CURRENT_PROFILE,
-  GET_ERRORS
+  DELETE_PROFILE,
+  GET_ERRORS,
+  GET_PROFILE_PHOTO
 } from "./types";
 
 export const setProfileLoading = () => {
@@ -37,6 +40,7 @@ export const getCurrentProfile = () => dispatch => {
 //create profile
 
 export const createProfile = (profileData, history) => dispatch => {
+  dispatch(setProfileLoading());
   axios
     .post("/api/profile", profileData)
     .then(() => history.push("/dashboard"))
@@ -57,6 +61,7 @@ export const createProfile = (profileData, history) => dispatch => {
 //upload profile photo
 
 export const uploadPhoto = photo => dispatch => {
+  dispatch(setProfileLoading());
   axios
     .post("/api/profile/upload", photo)
     .then(res =>
@@ -79,7 +84,11 @@ export const getProfilePhoto = () => dispatch => {
   axios
     .get("/api/profile/photo")
     .then(res => {
-      let data = res.data.path.replace(/public\\uploads\\/g, "");
+      let data = res.data.replace(/public\\uploads\\/g, "");
+      dispatch({
+        type: GET_PROFILE_PHOTO,
+        payload: data
+      });
       dispatch({
         type: SET_NAVBAR_PROFILE_PHOTO,
         payload: data
@@ -88,7 +97,7 @@ export const getProfilePhoto = () => dispatch => {
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
-        payload: err
+        payload: err.response.data
       })
     );
 };
@@ -101,4 +110,24 @@ export const clearCurrentProfile = () => {
   };
 };
 
-// get profiles
+// delete profile
+
+export const deleteAccount = () => dispatch => {
+  if(window.confirm('Are you sure? This can not be undone!')){
+    dispatch(setProfileLoading());
+    axios.delete('/api/profile')
+    .then(res => {
+      dispatch({
+        type: DELETE_PROFILE,
+        payload: {}
+      })
+      dispatch({
+      type: SET_CURRENT_USER,
+      payload: {}
+    })})
+    .catch(err => dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    }))
+  }
+}

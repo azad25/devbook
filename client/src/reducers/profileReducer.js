@@ -1,9 +1,11 @@
 import {
   GET_PROFILE,
+  GET_PROFILE_PHOTO,
   PROFILE_LOADING,
   SET_PROFILE_PHOTO,
   SET_NAVBAR_PROFILE_PHOTO,
-  CLEAR_CURRENT_PROFILE
+  CLEAR_CURRENT_PROFILE,
+  DELETE_PROFILE
 } from "../actions/types";
 
 const initialState = {
@@ -14,6 +16,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case DELETE_PROFILE:
+      return {
+        ...state,
+        loading: false
+      };
     case PROFILE_LOADING:
       return {
         ...state,
@@ -23,6 +30,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         profile: action.payload,
+        loading: false
+      };
+      case GET_PROFILE_PHOTO:
+      return {
+        ...state,
+        profilePhoto: action.payload,
         loading: false
       };
     case SET_PROFILE_PHOTO:

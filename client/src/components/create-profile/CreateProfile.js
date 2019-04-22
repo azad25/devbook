@@ -8,8 +8,13 @@ import SelectListGroup from "../common/SelectListGroup";
 import InputGroup from "../common/InputGroup";
 import AutoSuggestion from "../common/AutoSuggestion";
 import TagInput from "../common/TagInput";
+import TopBarProgress from "../../utils/progressbar";
 
-import { createProfile, uploadPhoto } from "../../actions/profileActions";
+import {
+  createProfile,
+  uploadPhoto,
+  getProfilePhoto
+} from "../../actions/profileActions";
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -17,6 +22,7 @@ class CreateProfile extends Component {
 
     this.state = {
       displaySocialInput: false,
+      displayProfilePhoto: "",
       handle: "",
       company: "",
       website: "",
@@ -59,6 +65,11 @@ class CreateProfile extends Component {
     });
   }
 
+  fileSelect(e) {
+    e.preventDefault();
+    document.getElementById("selectImage").click();
+  }
+
   fileEventHandler = e => {
     this.setState(
       {
@@ -70,6 +81,13 @@ class CreateProfile extends Component {
         data.append("photo", this.state.photo);
 
         this.props.uploadPhoto(data);
+
+        this.props.getProfilePhoto();
+
+        if (this.props.profilePhoto) {
+          document.getElementsByClassName("profileImg")[0].src =
+            "/uploads/" + this.props.profilePhoto;
+        }
       }
     );
   };
@@ -94,25 +112,16 @@ class CreateProfile extends Component {
       instagram: this.state.instagram,
       photo: this.props.profile.photo
     };
-    // data.append("handle", this.state.handle);
-    // data.append("company", this.state.company);
-    // data.append("website", this.state.website);
-    // data.append("location", this.state.location);
-    // data.append("status", this.state.status);
-    // data.append("githubUsername", this.state.githubUsername);
-    // data.append("skills", this.state.skills);
-    // data.append("bio", this.state.bio);
-    // data.append("twitter", this.state.twitter);
-    // data.append("facebook", this.state.facebook);
-    // data.append("linkedIn", this.state.linkedIn);
-    // data.append("instagram", this.state.instagram);
 
     this.props.createProfile(profile, history);
   }
   render() {
     const { errors, displaySocialInput } = this.state;
     let socialInput;
-
+    if (this.props.profilePhoto) {
+      document.getElementsByClassName("profileImg")[0].src =
+        "/uploads/" + this.props.profilePhoto;
+    }
     if (displaySocialInput) {
       socialInput = (
         <div>
@@ -171,6 +180,7 @@ class CreateProfile extends Component {
 
     return (
       <div className="create-profile mb-3">
+        {this.props.loading && <TopBarProgress />}
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
@@ -182,12 +192,30 @@ class CreateProfile extends Component {
               <form onSubmit={this.onSubmit}>
                 <div className="form-group">
                   <div className="custom-file">
-                    <input
-                      type="file"
-                      name="photo"
-                      className="custom-file-input form-control form-control-lg"
-                      onChange={this.fileEventHandler}
-                    />
+                    <div>
+                      <img
+                        src="/uploads/profile.png"
+                        style={{ width: "20%" }}
+                        className="rounded-circle image-responsive mx-auto d-block profileImg"
+                        alt="sample profile photo"
+                      />
+                      <div className="overlay">
+                        <button
+                          onClick={this.fileSelect.bind(this)}
+                          className="icon"
+                        >
+                          <i className="fas fa-camera" />
+                        </button>
+                      </div>
+                      <input
+                        type="file"
+                        name="photo"
+                        id="selectImage"
+                        className="custom-file-input form-control form-control-lg"
+                        onChange={this.fileEventHandler}
+                      />
+                    </div>
+
                     <label className="custom-file-label">
                       Select Profile Picture
                     </label>
@@ -196,7 +224,7 @@ class CreateProfile extends Component {
                       Profile Photo
                     </small>
                     {errors.photo && (
-                      <div className="invalid-feedback">
+                      <div className="invalid-feedback d-block">
                         <i className="fas fa-exclamation-triangle" />{" "}
                         {errors.photo}
                       </div>
@@ -299,16 +327,21 @@ class CreateProfile extends Component {
 CreateProfile.propTypes = {
   profile: PropTypes.object.isRequired,
   photo: PropTypes.object,
-  errors: PropTypes.object.isRequired
+  loading: PropTypes.bool.isRequired,
+  errors: PropTypes.object.isRequired,
+  getProfilePhoto: PropTypes.func.isRequired,
+  profilePhoto: PropTypes.string
 };
 
 const mapStateToProps = state => ({
   profile: state.profile,
   photo: state.photo,
+  profilePhoto: state.profile.profilePhoto,
+  loading: state.profile.loading,
   errors: state.errors
 });
 
 export default connect(
   mapStateToProps,
-  { createProfile, uploadPhoto }
+  { createProfile, uploadPhoto, getProfilePhoto }
 )(withRouter(CreateProfile));

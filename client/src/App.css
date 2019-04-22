@@ -150,3 +150,39 @@ div.ReactTags__suggestions ul li.ReactTags__activeSuggestion {
   background: #b7cfe0;
   cursor: pointer;
 }
+
+.overlay {
+  position: absolute;
+  top: 10vh;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  width: 50%;
+  opacity: 1;
+  margin: auto;
+  -webkit-transition: .3s ease;
+  transition: .3s ease;
+}
+
+.icon {
+  color:#fff;
+  font-size: 2rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+  border: none;
+  background-color: transparent;
+}
+
+.icon:hover{
+  color:#fff
+}
+
+.custom-file-label{
+  visibility: hidden;
+}

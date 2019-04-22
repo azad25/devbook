@@ -15,7 +15,6 @@ const ProfileSchema = mongoose.model(
     },
     handle: {
       type: String,
-      required: true,
       max: 40
     },
     company: {
@@ -29,11 +28,9 @@ const ProfileSchema = mongoose.model(
     },
     status: {
       type: String,
-      required: true
     },
     skills: {
-      type: [String],
-      required: true
+      type: [String]
     },
     bio: {
       type: String

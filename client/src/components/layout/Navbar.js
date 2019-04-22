@@ -25,6 +25,10 @@ class Navbar extends Component {
     this.props.clearCurrentProfile();
     this.props.logoutUser(this.props.history);
   }
+  onAvatarClick(e){
+    e.preventDefault();
+    this.props.history.push('/dashboard')
+  }
   render() {
     const { isAuthenticated, user } = this.props.auth;
     const link = "";
@@ -38,7 +42,7 @@ class Navbar extends Component {
         <li className="nav-item">
           <a
             href={link}
-            onClick={this.onLogoutClick.bind(this)}
+            onClick={this.onAvatarClick.bind(this)}
             className="nav-link"
           >
             <img
@@ -47,6 +51,14 @@ class Navbar extends Component {
               alt={user.name}
               style={{ width: "25px", marginRight: "5px" }}
             />
+          </a>
+        </li>
+        <li className="nav-item">
+          <a
+            href={link}
+            onClick={this.onLogoutClick.bind(this)}
+            className="nav-link"
+          >
             Logout
           </a>
         </li>

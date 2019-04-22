@@ -16,7 +16,7 @@ import Landing from "./components/layout/Landing";
 import Footer from "./components/layout/Footer";
 import Login from "./components/layout/auth/Login";
 import Register from "./components/layout/auth/Register";
-import Dashboard from "./components/layout/auth/Dashboard";
+import Dashboard from "./components/layout/auth/Dashboard/Dashboard";
 import CreateProfile from "./components/create-profile/CreateProfile";
 import NotFound from "./components/layout/404/NotFound";
 

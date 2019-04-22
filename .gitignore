@@ -2,3 +2,4 @@ package-lock.json
 /node_modules
 /config/keys.js
 /client/node_modules
+/public/uploads

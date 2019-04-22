@@ -2,12 +2,17 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {Link} from "react-router-dom";
-import { getCurrentProfile } from "../../../actions/profileActions";
-import Spinner from "../../common/Spinner";
+import { getCurrentProfile, deleteAccount } from "../../../../actions/profileActions";
+import ProfileActions from "./ProfileActions";
+import Spinner from "../../../common/Spinner";
+import TopBarProgress from '../../../../utils/progressbar';
 
 class Dashboard extends Component {
   componentDidMount() {
     this.props.getCurrentProfile();
+  }
+  onDeleteClick(e){
+    this.props.deleteAccount();
   }
   render() {
     const { user } = this.props.auth;
@@ -18,7 +23,17 @@ class Dashboard extends Component {
     profile == null || loading
       ? (dashboardContent = <Spinner />)
       : Object.keys(profile).length > 0
-      ? (dashboardContent = <h4>Display profile</h4>)
+      ? (dashboardContent = 
+          <div>
+            <p className="lead text-muted">
+              Welcome <Link to={`profile/${profile.handle}`}>{user.name}</Link>
+            </p>
+            <ProfileActions/> 
+            <div style={{marginBottom: '60px'}}>
+              <button onClick={this.onDeleteClick.bind(this)} className="btn btn-danger">Delete Account</button>
+            </div>
+          </div>
+        )
       : (dashboardContent = (
           <div>
             <p className="lead text-muted">
@@ -31,6 +46,8 @@ class Dashboard extends Component {
 
     return (
       <div className="dashbaord screen-height">
+        {this.props.loading &&
+        <TopBarProgress />}
         <div className="container">
           <div className="row">
             <div className="col-md-12">
@@ -47,15 +64,18 @@ class Dashboard extends Component {
 Dashboard.propTypes = {
   auth: PropTypes.object.isRequired,
   profile: PropTypes.object.isRequired,
-  getCurrentProfile: PropTypes.func.isRequired
+  getCurrentProfile: PropTypes.func.isRequired,
+  deleteAccount: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired
 };
 
 const mapStateToProops = state => ({
   auth: state.auth,
-  profile: state.profile
+  profile: state.profile,
+  loading: state.profile.loading
 });
 
 export default connect(
   mapStateToProops,
-  { getCurrentProfile }
+  { getCurrentProfile,deleteAccount }
 )(Dashboard);

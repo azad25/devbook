@@ -19,7 +19,8 @@ var upload = multer({
   fileFilter: function(req, file, callback) {
     var ext = path.extname(file.originalname.toLowerCase());
     if (ext !== ".png" && ext !== ".jpg" && ext !== ".gif" && ext !== ".jpeg") {
-      return callback(new Error("Only images are allowed"));
+      req.fileValidationError = "Only images are allowed";
+      return callback(null, false, req.fileValidationError);
     }
     callback(null, true);
   },
@@ -47,6 +48,7 @@ router.get(
   (req, res) => {
     const errors = {};
     Profile.findOne({ user: req.user.id })
+      .select("-photo")
       .populate("user", ["name", "email"])
       .then(profile => {
         errors.noprofile = "No profile for this user";
@@ -63,6 +65,7 @@ router.get(
 router.get("/handle/:handle", (req, res) => {
   const errors = {};
   Profile.findOne({ handle: req.params.handle })
+    .select("-photo")
     .populate("user", ["name", "email"])
     .then(profile => {
       errors.noprofile = "No profile for this user";
@@ -78,6 +81,7 @@ router.get("/handle/:handle", (req, res) => {
 router.get("/user/:user_id", (req, res) => {
   const errors = {};
   Profile.findOne({ user: req.params.user_id })
+    .select("-photo")
     .populate("user", ["name", "email"])
     .then(profile => {
       errors.noprofile = "No profile for this user";
@@ -96,6 +100,7 @@ router.get("/user/:user_id", (req, res) => {
 router.get("/all", (req, res) => {
   const errors = {};
   Profile.find()
+    .select("-photo")
     .populate("user", ["name", "email"])
     .then(profiles => {
       errors.noprofile = "Currently no profiles";
@@ -143,13 +148,11 @@ router.post(
     if (req.body.education) fields.education = req.body.education;
 
     fields.social = {};
-    fields.photo = {};
 
     if (req.body.facebook) fields.social.facebook = req.body.facebook;
     if (req.body.twitter) fields.social.twitter = req.body.twitter;
     if (req.body.linkedIn) fields.social.linkedIn = req.body.linkedIn;
     if (req.body.instagram) fields.social.instagram = req.body.instagram;
-    if (req.body.photo) fields.photo = req.body.photo;
 
     Profile.findOne({ user: req.user.id })
       .populate("user", ["name", "email"])
@@ -159,12 +162,14 @@ router.post(
             { user: req.user.id },
             { $set: fields },
             { new: true }
-          ).then(profile => {
-            profile.photo = {};
-            res.status(200).json(profile);
-          });
+          )
+            .select("-photo")
+            .then(profile => {
+              res.status(200).send(profile);
+            });
         } else {
           Profile.findOne({ handle: req.body.handle })
+            .select("-photo")
             .populate("user", ["name", "email"])
             .then(profile => {
               if (profile) {
@@ -172,7 +177,6 @@ router.post(
                 res.status(400).json();
               } else {
                 new Profile(fields).save().then(profile => {
-                  profile.photo = {};
                   res.status(200).json(profile);
                 });
               }
@@ -192,21 +196,57 @@ router.post(
   "/upload",
   [passport.authenticate("jwt", { session: false }), upload],
   (req, res) => {
-    const file = req.file;
+    if (!req.fileValidationError) {
+      const file = req.file;
+      let fields = {};
+      fields.user = req.user.id;
+      if (!file) {
+        const errors = {
+          photo: "File not found"
+        };
+        res.status(404).json(errors);
+      } else {
+        var img = fs.readFileSync(req.file.path, "base64");
+        var finalImg = {
+          contentType: req.file.mimetype,
+          image: new Buffer.from(img, "base64"),
+          path: req.file.path
+        };
 
-    if (!file) {
-      const errors = {
-        photo: "File not found"
-      };
-      res.status(404).json(errors);
-    } else {
-      var img = fs.readFileSync(req.file.path, "base64");
-      var finalImg = {
-        contentType: req.file.mimetype,
-        image: new Buffer.from(img, "base64"),
-        path: req.file.path
-      };
-      res.status(200).send(finalImg);
+        fields.photo = finalImg;
+
+        Profile.findOne({ user: req.user.id })
+          .populate("user", ["name", "email"])
+          .then(profile => {
+            if (profile) {
+              Profile.findOneAndUpdate(
+                { user: req.user.id },
+                { $set: fields },
+                { new: true }
+              )
+                .select("photo")
+                .then(response => {
+                  res.status(200).send(response.photo.path);
+                });
+            } else {
+              Profile.findOne({ handle: req.body.handle })
+                .populate("user", ["name", "email"])
+                .then(profile => {
+                  new Profile(fields).save();
+
+                  Profile.findOne({ handle: req.body.handle })
+                    .select("photo")
+                    .then(response => {
+                      res.status(200).json(response.photo.path);
+                    });
+                })
+                .catch(err => res.status(400).json(err));
+            }
+          })
+          .catch(err => res.status(400).json(err));
+      }
+    }else{
+      res.status(400).json({photo: "Only images are allowed"})
     }
   }
 );
@@ -220,23 +260,24 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Profile.findOne({ user: req.user.id })
-      .then(profile => {
-        if (profile.photo) {
-          res.status(200).json({ path: profile.photo.path });
-        } else {
-          res.status(200).json({ photo: "No photo found" });
-        }
+      .select("photo.path")
+      .then(response => {
+        if(response) {
+        res.send(response.photo.path)
+      }else{
+        res.status(400).json({error: "User photo not found"})
+      }
       })
       .catch(err => res.status(400).json(err));
   }
 );
 
-//@route DELETE /api/profile/delete
+//@route DELETE /api/profile/
 //@desc delete profile and user
 //@access private
 
 router.delete(
-  "/delete",
+  "/",
   passport.authenticate("jwt", { session: false }),
   (req, res) => {
     Profile.findOneAndRemove({ user: req.user.id })
