@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   GET_PROFILE,
   PROFILE_LOADING,
+  SET_PROFILE_PHOTO,
   CLEAR_CURRENT_PROFILE,
   GET_ERRORS
 } from "./types";
@@ -50,6 +51,23 @@ export const createProfile = (profileData, history) => dispatch => {
         payload: errors
       });
     });
+};
+
+//upload profile photo
+
+export const uploadPhoto = photo => dispatch => {
+  axios
+    .post("/api/profile/upload", photo)
+    .then(res => dispatch({
+      type: SET_PROFILE_PHOTO,
+      payload: res.data
+    }))
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
 };
 
 // clear profile

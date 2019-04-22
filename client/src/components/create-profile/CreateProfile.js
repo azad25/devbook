@@ -9,7 +9,7 @@ import InputGroup from "../common/InputGroup";
 import AutoSuggestion from "../common/AutoSuggestion";
 import TagInput from "../common/TagInput";
 
-import { createProfile } from "../../actions/profileActions";
+import { createProfile, uploadPhoto } from "../../actions/profileActions";
 
 class CreateProfile extends Component {
   constructor(props) {
@@ -38,16 +38,15 @@ class CreateProfile extends Component {
     this.setTagInput = this.setTagInput.bind(this);
     this.setLocation = this.setLocation.bind(this);
   }
-  onChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
         errors: nextProps.errors
       });
     }
+  }
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
   setTagInput(data) {
     this.setState({
@@ -61,30 +60,54 @@ class CreateProfile extends Component {
   }
 
   fileEventHandler = e => {
-    this.setState({
-      photo: e.target.files[0]
-    }, () => {});
+    this.setState(
+      {
+        photo: e.target.files[0]
+      },
+      () => {
+        let data = new FormData();
+
+        data.append("photo", this.state.photo);
+
+        this.props.uploadPhoto(data);
+      }
+    );
   };
   onSubmit(e) {
     e.preventDefault();
 
-    let data = new FormData();
-    data.append("handle", this.state.handle);
-    data.append("company", this.state.company);
-    data.append("website", this.state.website);
-    data.append("location", this.state.location);
-    data.append("status", this.state.status);
-    data.append("githubUsername", this.state.githubUsername);
-    data.append("skills", this.state.skills);
-    data.append("bio", this.state.bio);
-    data.append("twitter", this.state.twitter);
-    data.append("facebook", this.state.facebook);
-    data.append("linkedIn", this.state.linkedIn);
-    data.append("instagram", this.state.instagram);
+    let profile = {};
+    let history = this.props.history;
 
-    data.append("photo", this.state.photo);
-    
-    this.props.createProfile(data);
+    profile = {
+      handle: this.state.handle,
+      company: this.state.company,
+      website: this.state.website,
+      location: this.state.location,
+      status: this.state.status,
+      skills: this.state.skills,
+      githubUsername: this.state.githubUsername,
+      bio: this.state.bio,
+      twitter: this.state.twitter,
+      facebook: this.state.facebook,
+      linkedIn: this.state.linkedIn,
+      instagram: this.state.instagram,
+      photo: this.props.profile.photo
+    };
+    // data.append("handle", this.state.handle);
+    // data.append("company", this.state.company);
+    // data.append("website", this.state.website);
+    // data.append("location", this.state.location);
+    // data.append("status", this.state.status);
+    // data.append("githubUsername", this.state.githubUsername);
+    // data.append("skills", this.state.skills);
+    // data.append("bio", this.state.bio);
+    // data.append("twitter", this.state.twitter);
+    // data.append("facebook", this.state.facebook);
+    // data.append("linkedIn", this.state.linkedIn);
+    // data.append("instagram", this.state.instagram);
+
+    this.props.createProfile(profile, history);
   }
   render() {
     const { errors, displaySocialInput } = this.state;
@@ -275,15 +298,17 @@ class CreateProfile extends Component {
 
 CreateProfile.propTypes = {
   profile: PropTypes.object.isRequired,
+  photo: PropTypes.object,
   errors: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   profile: state.profile,
+  photo: state.photo,
   errors: state.errors
 });
 
 export default connect(
   mapStateToProps,
-  { createProfile }
+  { createProfile, uploadPhoto }
 )(withRouter(CreateProfile));

@@ -7,22 +7,17 @@ const cors = require("cors");
 
 // public folder
 const app = express();
-//app.use(cors());
-//app.use(express.static(('./public')));
+app.use(express.static(('./public')));
+
+//define routes
 
 const users = require("./routes/api/users");
 const profile = require("./routes/api/profile");
 const posts = require("./routes/api/posts");
 
 // body parser middleware
-app.use(bodyparser.json());
-app.use(
-  bodyparser.urlencoded({
-    extended: true,
-    keepExtensions: true,
-    uploadDir: __dirname + "/public"
-  })
-);
+app.use(bodyparser.json({ limit: "50mb" }))
+app.use(bodyparser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }))
 
 // app logger
 app.use(logger("dev"));
@@ -35,8 +30,6 @@ mongoose
   .connect(db, { useNewUrlParser: true })
   .then(() => console.log("MongoDB connected"))
   .catch(() => console.log("Conncetion error"));
-
-app.get("/", (req, res) => res.send("hello"));
 
 // Passport Middleware
 app.use(passport.initialize());
