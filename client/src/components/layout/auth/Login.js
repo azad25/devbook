@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { loginUser } from "../../../actions/authActions";
 import TextFieldGroup from "../../common/TextFieldGroup";
+import TopBarProgress from '../../../utils/progressbar';
 
 class Login extends Component {
   constructor() {
@@ -44,6 +45,7 @@ class Login extends Component {
 
     return (
       <div className="login screen-height">
+      {this.props.loading && <TopBarProgress />}
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
@@ -80,13 +82,15 @@ class Login extends Component {
 
 Login.propTypes = {
   loginUser: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
   auth: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   auth: state.auth,
-  errors: state.errors
+  errors: state.errors,
+  loading: state.auth.loading
 });
 
 export default connect(

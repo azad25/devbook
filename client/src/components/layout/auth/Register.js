@@ -4,6 +4,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import TextFieldGroup from "../../common/TextFieldGroup";
 import { registerUser } from "../../../actions/authActions";
+import TopBarProgress from '../../../utils/progressbar';
+
 
 class Register extends Component {
   constructor() {
@@ -45,6 +47,7 @@ class Register extends Component {
 
     return (
       <div className="register screen-height">
+      {this.props.loading && <TopBarProgress />}
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
@@ -98,11 +101,13 @@ class Register extends Component {
 Register.propTypes = {
   registerUser: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
   errors: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
   auth: state.auth,
+  loading: state.auth.loading,
   errors: state.errors
 });
 

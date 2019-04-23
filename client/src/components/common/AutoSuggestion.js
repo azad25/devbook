@@ -19,7 +19,6 @@ class AutoSuggestion extends Component {
 
     this.state = {
       name: this.props.name,
-      value: "",
       suggestions: [],
       disabled: false,
       color: "#495057",
@@ -96,11 +95,11 @@ class AutoSuggestion extends Component {
     }
   }
   render() {
-    const { value, suggestions, info, error } = this.state;
+    const { name, suggestions, info, error } = this.state;
     const inputProps = {
-      name: this.state.name,
-      placeholder: "Add Location",
-      value,
+      name,
+      value: this.props.value,
+      placeholder: "Enter your city and select from list",
       className: "form-control form-control-lg",
       onChange: this.onChange,
       disabled: this.state.disabled
@@ -118,6 +117,7 @@ class AutoSuggestion extends Component {
             </span>
           </div>
           <Autosuggest
+            inputProps={inputProps}
             onSuggestionSelected={this.onSuggestionSelected}
             suggestions={suggestions}
             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
@@ -125,7 +125,6 @@ class AutoSuggestion extends Component {
             shouldRenderSuggestions={this.shouldRenderSuggestions}
             getSuggestionValue={this.getSuggestionValue}
             renderSuggestion={this.renderSuggestion}
-            inputProps={inputProps}
             highlightFirstSuggestion={true}
             onChange={this.onChange}
           />
@@ -140,7 +139,7 @@ class AutoSuggestion extends Component {
           </small>
         )}
         {error && (
-          <div className="invalid-feedback" style={{display:"block"}}>
+          <div className="invalid-feedback" style={{ display: "block" }}>
             <i className="fas fa-exclamation-triangle" /> {error}
           </div>
         )}

@@ -9,9 +9,11 @@ import InputGroup from "../common/InputGroup";
 import AutoSuggestion from "../common/AutoSuggestion";
 import TagInput from "../common/TagInput";
 import TopBarProgress from "../../utils/progressbar";
+import { isEmpty } from "../../validation/is-empty";
 
 import {
   createProfile,
+  getCurrentProfile,
   uploadPhoto,
   getProfilePhoto
 } from "../../actions/profileActions";
@@ -44,10 +46,58 @@ class CreateProfile extends Component {
     this.setTagInput = this.setTagInput.bind(this);
     this.setLocation = this.setLocation.bind(this);
   }
+  componentDidMount() {
+    this.props.getCurrentProfile();
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({
         errors: nextProps.errors
+      });
+    }
+
+    if (nextProps.profile.profile) {
+      const profile = nextProps.profile.profile;
+
+      // bring skills array back to tags
+      const skills = [];
+
+      profile.company = !isEmpty(profile.company) ? profile.company : "";
+      profile.website = !isEmpty(profile.website) ? profile.website : "";
+      profile.githubUsername = !isEmpty(profile.githubUsername)
+        ? profile.githubUsername
+        : "";
+      profile.bio = !isEmpty(profile.bio) ? profile.bio : "";
+
+      if (profile.social) {
+        profile.social.facebook = !isEmpty(profile.social.facebook)
+          ? profile.social.facebook
+          : "";
+        profile.social.twitter = !isEmpty(profile.social.twitter)
+          ? profile.social.twitter
+          : "";
+        profile.social.linkedIn = !isEmpty(profile.social.linkedIn)
+          ? profile.social.linkedIn
+          : "";
+        profile.social.instagram = !isEmpty(profile.social.instagram)
+          ? profile.social.instagram
+          : "";
+      }
+      // set component field state;
+
+      this.setState({
+        handle: profile.handle,
+        company: profile.company,
+        website: profile.website,
+        location: profile.location,
+        status: profile.status,
+        skills: profile.skills,
+        githubUsername: profile.githubUsername,
+        bio: profile.bio,
+        facebook: profile.facebook,
+        twitter: profile.twitter,
+        linkedIn: profile.linkedIn,
+        instagram: profile.instagram
       });
     }
   }
@@ -109,7 +159,8 @@ class CreateProfile extends Component {
       twitter: this.state.twitter,
       facebook: this.state.facebook,
       linkedIn: this.state.linkedIn,
-      instagram: this.state.instagram
+      instagram: this.state.instagram,
+      photo: this.props.profile.photo
     };
 
     this.props.createProfile(profile, history);
@@ -117,10 +168,13 @@ class CreateProfile extends Component {
   render() {
     const { errors, displaySocialInput } = this.state;
     let socialInput;
-    if (this.props.profilePhoto) {
-      document.getElementsByClassName("profileImg")[0].src =
-        "/uploads/" + this.props.profilePhoto;
-    }
+    setInterval(() => {
+        if (this.props.profilePhoto) {
+            document.getElementsByClassName("profileImg")[0].src =
+              "/uploads/" + this.props.profilePhoto;
+          }
+    }, 100)
+
     if (displaySocialInput) {
       socialInput = (
         <div>
@@ -183,7 +237,7 @@ class CreateProfile extends Component {
         <div className="container">
           <div className="row">
             <div className="col-md-8 m-auto">
-              <h1 className="display-4 text-center">Create your profile</h1>
+              <h1 className="display-4 text-center">Edit your profile</h1>
               <p className="lead text-center">
                 Let's get some information to make your profile stand out
               </p>
@@ -266,6 +320,7 @@ class CreateProfile extends Component {
                   info="Tell us your city"
                   setLocation={this.setLocation}
                   error={errors.location}
+                  value={this.state.location}
                 />
 
                 <TagInput
@@ -273,6 +328,7 @@ class CreateProfile extends Component {
                   setTagInput={this.setTagInput}
                   info="Tell us your skills"
                   error={errors.skills}
+                  tags={this.state.skills}
                 />
 
                 <TextFieldGroup
@@ -327,6 +383,7 @@ class CreateProfile extends Component {
 
 CreateProfile.propTypes = {
   profile: PropTypes.object.isRequired,
+  getCurrentProfile: PropTypes.func.isRequired,
   photo: PropTypes.object,
   loading: PropTypes.bool.isRequired,
   errors: PropTypes.object.isRequired,
@@ -344,5 +401,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { createProfile, uploadPhoto, getProfilePhoto }
+  { createProfile, getCurrentProfile, uploadPhoto, getProfilePhoto }
 )(withRouter(CreateProfile));

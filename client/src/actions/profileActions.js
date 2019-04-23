@@ -2,7 +2,7 @@ import axios from "axios";
 import {
   SET_CURRENT_USER,
   GET_PROFILE,
-  PROFILE_LOADING,
+  LOADING,
   SET_PROFILE_PHOTO,
   SET_NAVBAR_PROFILE_PHOTO,
   CLEAR_CURRENT_PROFILE,
@@ -13,7 +13,7 @@ import {
 
 export const setProfileLoading = () => {
   return {
-    type: PROFILE_LOADING
+    type: LOADING
   };
 };
 
@@ -84,7 +84,7 @@ export const getProfilePhoto = () => dispatch => {
   axios
     .get("/api/profile/photo")
     .then(res => {
-      let data = res.data.replace(/public\\uploads\\/g, "");
+      let data = res.data.replace(/public\W*uploads\W*/i, "");
       dispatch({
         type: GET_PROFILE_PHOTO,
         payload: data

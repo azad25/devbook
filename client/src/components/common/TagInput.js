@@ -82,6 +82,14 @@ class TagInput extends Component {
         error: nextProps.error
       });
     }
+
+    if(nextProps.tags){
+      const newTags = nextProps.tags.map( k => Object.assign({id:k.toString(),text:k.toString()}));
+
+      this.setState({tags: newTags}, () => {
+        console.log("set new tags");
+      });
+    }
   }
 
   render() {

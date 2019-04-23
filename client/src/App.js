@@ -11,6 +11,7 @@ import "./App.css";
 
 import PrivateRoute from "./components/common/PrivateRoute";
 
+import NotFound from "./components/layout/404/NotFound";
 import Navbar from "./components/layout/Navbar";
 import Landing from "./components/layout/Landing";
 import Footer from "./components/layout/Footer";
@@ -18,7 +19,7 @@ import Login from "./components/layout/auth/Login";
 import Register from "./components/layout/auth/Register";
 import Dashboard from "./components/layout/auth/Dashboard/Dashboard";
 import CreateProfile from "./components/create-profile/CreateProfile";
-import NotFound from "./components/layout/404/NotFound";
+import EditProfile from "./components/edit-profile/EditProfile";
 
 // check for token
 
@@ -65,6 +66,10 @@ class App extends Component {
               <PrivateRoute
                 path="/create-profile"
                 component={CreateProfile}
+              />
+              <PrivateRoute
+                path="/edit-profile"
+                component={EditProfile}
               />
               <Route component={NotFound} />
             </Switch>
