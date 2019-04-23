@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import {isEmpty} from "../../validation/is-empty";
+import { isEmpty } from "../../validation/is-empty";
 
 class ProfieItem extends Component {
   render() {
     const { profile } = this.props;
     let photo = "";
-    if(!isEmpty(profile.photo)){
-        photo = profile.photo.path.replace(/public\W*uploads\W*/i, "");
-    }else{
-        photo = "profile.png";
+    if (!isEmpty(profile.photo)) {
+      photo = profile.photo.path.replace(/public\W*uploads\W*/i, "");
+    } else {
+      photo = "profile.png";
     }
 
     return (
@@ -22,17 +22,18 @@ class ProfieItem extends Component {
           <div className="col-lg-6 col-md-4 col-8">
             <h3>{profile.user.name}</h3>
             <p>
-              {profile.status}{" "}
+              <i class="fas fa-briefcase" />{" "} {profile.status}{" "}
               {isEmpty(profile.company) ? null : (
                 <span>at {profile.company}</span>
               )}
             </p>
             <p>
+              <i class="fas fa-map-marker-alt"></i> {" "}
               {isEmpty(profile.location) ? null : (
                 <span>{profile.location}</span>
               )}
             </p>
-            <Link to={`/profile/${profile.handle}`} className="btn btn-info">
+            <Link to={`/p/${profile.handle}`} className="btn btn-md btn-primary">
               View Profile
             </Link>
           </div>

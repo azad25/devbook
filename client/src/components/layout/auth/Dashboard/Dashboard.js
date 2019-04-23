@@ -30,7 +30,7 @@ class Dashboard extends Component {
       ? (dashboardContent = 
           <div>
             <p className="lead text-muted">
-              Welcome <Link to={`profile/${profile.handle}`}>{user.name}</Link>
+              Welcome <Link to={`p/${profile.handle}`}>{user.name}</Link>
             </p>
             <ProfileActions/>
             <Experience experience={profile.experience}/>
@@ -51,7 +51,7 @@ class Dashboard extends Component {
         ));
 
     return (
-      <div className="dashbaord screen-height">
+      <div className="dashbaord">
         {this.props.loading &&
         <TopBarProgress />}
         <div className="container">

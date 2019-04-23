@@ -65,7 +65,7 @@ router.get(
 router.get("/handle/:handle", (req, res) => {
   const errors = {};
   Profile.findOne({ handle: req.params.handle })
-    .select("-photo")
+    .select("-photo.image")
     .populate("user", ["name", "email"])
     .then(profile => {
       errors.noprofile = "No profile for this user";
@@ -138,8 +138,8 @@ router.post(
       }
     }
 
-    if (req.body.githubusername)
-      fields.githubusername = req.body.githubusername;
+    if (req.body.githubUsername)
+      fields.githubUsername = req.body.githubUsername;
     if (req.body.linkedinUsername)
       fields.linkedinUsername = req.body.linkedinUsername;
 
@@ -168,8 +168,8 @@ router.post(
             });
         } else {
           Profile.findOne({ handle: req.body.handle })
-            .select("-photo")
             .populate("user", ["name", "email"])
+            .select("-photo")
             .then(profile => {
               if (profile) {
                 errors.handle = "Handle already exists";

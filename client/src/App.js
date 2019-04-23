@@ -23,6 +23,7 @@ import EditProfile from "./components/edit-profile/EditProfile";
 import AddExperience from "./components/add-credentials/AddExperience";
 import AddEducation from "./components/add-credentials/AddEducation";
 import Profiles from "./components/profiles/Profiles";
+import Profile from "./components/profile/Profile";
 
 // check for token
 
@@ -69,6 +70,11 @@ class App extends Component {
                 exact
                 path="/developers"
                 component={props => <Profiles {...props} />}
+              />
+              <Route
+                exact
+                path="/p/:handle"
+                component={props => <Profile {...props} />}
               />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
               <PrivateRoute
