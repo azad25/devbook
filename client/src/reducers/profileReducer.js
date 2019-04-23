@@ -1,5 +1,6 @@
 import {
   GET_PROFILE,
+  GET_PROFILES,
   GET_PROFILE_PHOTO,
   LOADING,
   SET_PROFILE_PHOTO,
@@ -17,15 +18,15 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case DELETE_PROFILE:
-      return {
-        ...state,
-        loading: false
-      };
     case LOADING:
       return {
         ...state,
         loading: true
+      };
+    case DELETE_PROFILE:
+      return {
+        ...state,
+        loading: false
       };
     case GET_PROFILE:
       return {
@@ -33,7 +34,13 @@ export default (state = initialState, action) => {
         profile: action.payload,
         loading: false
       };
-      case GET_PROFILE_PHOTO:
+    case GET_PROFILES:
+      return {
+        ...state,
+        profiles: action.payload,
+        loading: false
+      };
+    case GET_PROFILE_PHOTO:
       return {
         ...state,
         profilePhoto: action.payload,
@@ -54,13 +61,14 @@ export default (state = initialState, action) => {
     case CLEAR_CURRENT_PROFILE:
       return {
         ...state,
-        profile: null
+        profile: null,
+        profilePhoto: ""
       };
-    case GET_ERRORS :
+    case GET_ERRORS:
       return {
         ...state,
         loading: false
-      }
+      };
     default:
       return state;
   }

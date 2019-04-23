@@ -100,8 +100,7 @@ router.get("/user/:user_id", (req, res) => {
 router.get("/all", (req, res) => {
   const errors = {};
   Profile.find()
-    .select("-photo")
-    .populate("user", ["name", "email"])
+    .select("-photo.image")
     .then(profiles => {
       errors.noprofile = "Currently no profiles";
       !profiles ? res.status(400).json(errors) : res.json(profiles);
@@ -229,24 +228,18 @@ router.post(
                   res.status(200).send(response.photo.path);
                 });
             } else {
-              Profile.findOne({ handle: req.body.handle })
-                .populate("user", ["name", "email"])
-                .then(profile => {
-                  new Profile(fields).save();
-
-                  Profile.findOne({ handle: req.body.handle })
-                    .select("photo")
-                    .then(response => {
-                      res.status(200).json(response.photo.path);
-                    });
+              new Profile(fields)
+                .save()
+                .then(() => {
+                  res.status(200).send(fields.photo.path);
                 })
                 .catch(err => res.status(400).json(err));
             }
           })
           .catch(err => res.status(400).json(err));
       }
-    }else{
-      res.status(400).json({photo: "Only images are allowed"})
+    } else {
+      res.status(400).json({ photo: "Only images are allowed" });
     }
   }
 );
@@ -262,11 +255,11 @@ router.get(
     Profile.findOne({ user: req.user.id })
       .select("photo.path")
       .then(response => {
-        if(response) {
-        res.send(response.photo.path)
-      }else{
-        res.status(400).json({error: "User photo not found"})
-      }
+        if (response) {
+          res.send(response.photo.path);
+        } else {
+          res.status(400).json({ error: "User photo not found" });
+        }
       })
       .catch(err => res.status(400).json(err));
   }

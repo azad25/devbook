@@ -44,8 +44,8 @@ class CreateProfile extends Component {
     this.setTagInput = this.setTagInput.bind(this);
     this.setLocation = this.setLocation.bind(this);
   }
-  componentDidMount(){
-    if(this.props.profilePhoto){
+  componentDidMount() {
+    if (this.props.profilePhoto) {
       this.props.history.push("/edit-profile");
     }
   }
@@ -57,7 +57,7 @@ class CreateProfile extends Component {
     }
   }
   onChange(e) {
-    this.setState({ [e.target.name]: e.target.value,  errors: {} });
+    this.setState({ [e.target.name]: e.target.value, errors: {} });
   }
   setTagInput(data) {
     this.setState({
@@ -89,10 +89,12 @@ class CreateProfile extends Component {
 
         this.props.getProfilePhoto();
 
-        if (this.props.profilePhoto) {
-          document.getElementsByClassName("profileImg")[0].src =
-            "/uploads/" + this.props.profilePhoto;
-        }
+        setTimeout(() => {
+          if (this.props.profilePhoto) {
+            document.getElementsByClassName("profileImg")[0].src =
+              "/uploads/" + this.props.profilePhoto;
+          }
+        }, 100);
       }
     );
   };
@@ -171,7 +173,10 @@ class CreateProfile extends Component {
     }
     // Select options for status
     const options = [
-      { label: "* Select Professional Status", value: "Select Professional Status" },
+      {
+        label: "* Select Professional Status",
+        value: "Select Professional Status"
+      },
       { label: "Developer", value: "Developer" },
       { label: "Junior Developer", value: "Junior Developer" },
       { label: "Senior Developer", value: "Senior Developer" },
@@ -200,7 +205,7 @@ class CreateProfile extends Component {
                       <img
                         src="/uploads/profile.png"
                         style={{ width: "20%" }}
-                        className="image-responsive mx-auto d-block profileImg"
+                        className="img-fluid mx-auto d-block profileImg"
                         alt="profile"
                       />
                       <div className="overlay">

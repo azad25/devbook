@@ -245,7 +245,7 @@ class CreateProfile extends Component {
                       <img
                         src="/uploads/profile.png"
                         style={{ width: "20%" }}
-                        className="image-responsive mx-auto d-block profileImg"
+                        className="img-fluid mx-auto d-block profileImg"
                         alt="profile"
                       />
                       <div className="overlay">
