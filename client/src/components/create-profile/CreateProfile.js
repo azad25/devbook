@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter,Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaGroup from "../common/TextAreaGroup";
@@ -57,7 +57,7 @@ class CreateProfile extends Component {
     }
   }
   onChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value,  errors: {} });
   }
   setTagInput(data) {
     this.setState({
@@ -201,7 +201,7 @@ class CreateProfile extends Component {
                         src="/uploads/profile.png"
                         style={{ width: "20%" }}
                         className="image-responsive mx-auto d-block profileImg"
-                        alt="sample profile photo"
+                        alt="profile"
                       />
                       <div className="overlay">
                         <button
@@ -340,6 +340,7 @@ class CreateProfile extends Component {
 }
 
 CreateProfile.propTypes = {
+  createProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   photo: PropTypes.object,
   loading: PropTypes.bool.isRequired,

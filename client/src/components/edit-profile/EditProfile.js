@@ -59,9 +59,6 @@ class CreateProfile extends Component {
     if (nextProps.profile.profile) {
       const profile = nextProps.profile.profile;
 
-      // bring skills array back to tags
-      const skills = [];
-
       profile.company = !isEmpty(profile.company) ? profile.company : "";
       profile.website = !isEmpty(profile.website) ? profile.website : "";
       profile.githubUsername = !isEmpty(profile.githubUsername)
@@ -101,7 +98,7 @@ class CreateProfile extends Component {
     }
   }
   onChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value, errors: {} });
   }
   setTagInput(data) {
     this.setState({
@@ -249,7 +246,7 @@ class CreateProfile extends Component {
                         src="/uploads/profile.png"
                         style={{ width: "20%" }}
                         className="image-responsive mx-auto d-block profileImg"
-                        alt="sample profile photo"
+                        alt="profile"
                       />
                       <div className="overlay">
                         <button

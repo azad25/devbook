@@ -7,6 +7,9 @@ import ProfileActions from "./ProfileActions";
 import Spinner from "../../../common/Spinner";
 import TopBarProgress from '../../../../utils/progressbar';
 
+import Experience from './Experience';
+import Education from './Education';
+
 class Dashboard extends Component {
   componentDidMount() {
     this.props.getCurrentProfile();
@@ -28,7 +31,9 @@ class Dashboard extends Component {
             <p className="lead text-muted">
               Welcome <Link to={`profile/${profile.handle}`}>{user.name}</Link>
             </p>
-            <ProfileActions/> 
+            <ProfileActions/>
+            <Experience experience={profile.experience}/>
+            <Education education={profile.education}/>
             <div style={{marginBottom: '60px'}}>
               <button onClick={this.onDeleteClick.bind(this)} className="btn btn-danger">Delete Account</button>
             </div>
