@@ -83,12 +83,12 @@ class TagInput extends Component {
       });
     }
 
-    if(nextProps.tags){
-      const newTags = nextProps.tags.map( k => Object.assign({id:k.toString(),text:k.toString()}));
+    if (nextProps.tags) {
+      const newTags = nextProps.tags.map(k =>
+        Object.assign({ id: k.toString(), text: k.toString() })
+      );
 
-      this.setState({tags: newTags}, () => {
-        console.log("set new tags");
-      });
+      this.setState({ tags: newTags }, () => {});
     }
   }
 

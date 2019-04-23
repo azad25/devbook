@@ -98,7 +98,7 @@ class AutoSuggestion extends Component {
     const { name, suggestions, info, error } = this.state;
     const inputProps = {
       name,
-      value: this.props.value,
+      value: (this.props.value) ? this.props.value : "",
       placeholder: "Enter your city and select from list",
       className: "form-control form-control-lg",
       onChange: this.onChange,

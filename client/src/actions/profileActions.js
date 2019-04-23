@@ -64,12 +64,13 @@ export const uploadPhoto = photo => dispatch => {
   dispatch(setProfileLoading());
   axios
     .post("/api/profile/upload", photo)
-    .then(res =>
+    .then(res => {
+      let data = res.data.replace(/public\W*uploads\W*/i, "");
       dispatch({
         type: SET_PROFILE_PHOTO,
-        payload: res.data
-      })
-    )
+        payload: data
+      });
+    })
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -81,6 +82,7 @@ export const uploadPhoto = photo => dispatch => {
 //get profile photo
 
 export const getProfilePhoto = () => dispatch => {
+  dispatch(setProfileLoading());
   axios
     .get("/api/profile/photo")
     .then(res => {
@@ -113,21 +115,25 @@ export const clearCurrentProfile = () => {
 // delete profile
 
 export const deleteAccount = () => dispatch => {
-  if(window.confirm('Are you sure? This can not be undone!')){
+  if (window.confirm("Are you sure? This can not be undone!")) {
     dispatch(setProfileLoading());
-    axios.delete('/api/profile')
-    .then(res => {
-      dispatch({
-        type: DELETE_PROFILE,
-        payload: {}
+    axios
+      .delete("/api/profile")
+      .then(res => {
+        dispatch({
+          type: DELETE_PROFILE,
+          payload: {}
+        });
+        dispatch({
+          type: SET_CURRENT_USER,
+          payload: {}
+        });
       })
-      dispatch({
-      type: SET_CURRENT_USER,
-      payload: {}
-    })})
-    .catch(err => dispatch({
-      type: GET_ERRORS,
-      payload: err.response.data
-    }))
+      .catch(err =>
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        })
+      );
   }
-}
+};

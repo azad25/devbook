@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter,Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import TextFieldGroup from "../common/TextFieldGroup";
 import TextAreaGroup from "../common/TextAreaGroup";
@@ -43,6 +43,11 @@ class CreateProfile extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.setTagInput = this.setTagInput.bind(this);
     this.setLocation = this.setLocation.bind(this);
+  }
+  componentDidMount(){
+    if(this.props.profilePhoto){
+      this.props.history.push("/edit-profile");
+    }
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
@@ -129,7 +134,7 @@ class CreateProfile extends Component {
             name="Twitter"
             icon="fab fa-twitter"
             value={this.state.twitter}
-            onTagInput={this.getTagInput}
+            onChange={this.onChange}
             error={errors.twitter}
           />
 
@@ -166,7 +171,7 @@ class CreateProfile extends Component {
     }
     // Select options for status
     const options = [
-      { label: "* Select Professional Status", value: 0 },
+      { label: "* Select Professional Status", value: "Select Professional Status" },
       { label: "Developer", value: "Developer" },
       { label: "Junior Developer", value: "Junior Developer" },
       { label: "Senior Developer", value: "Senior Developer" },
@@ -195,7 +200,7 @@ class CreateProfile extends Component {
                       <img
                         src="/uploads/profile.png"
                         style={{ width: "20%" }}
-                        className="rounded-circle image-responsive mx-auto d-block profileImg"
+                        className="image-responsive mx-auto d-block profileImg"
                         alt="sample profile photo"
                       />
                       <div className="overlay">
@@ -266,6 +271,7 @@ class CreateProfile extends Component {
                   info="Tell us your city"
                   setLocation={this.setLocation}
                   error={errors.location}
+                  value={this.state.location}
                 />
 
                 <TagInput
@@ -274,7 +280,15 @@ class CreateProfile extends Component {
                   info="Tell us your skills"
                   error={errors.skills}
                 />
-
+                <TextFieldGroup
+                  placeholder="Website"
+                  name="website"
+                  type="text"
+                  value={this.state.website}
+                  onChange={this.onChange}
+                  error={errors.website}
+                  info="Enter your website"
+                />
                 <TextFieldGroup
                   placeholder="Github"
                   name="githubUsername"

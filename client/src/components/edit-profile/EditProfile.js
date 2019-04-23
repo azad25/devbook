@@ -68,21 +68,20 @@ class CreateProfile extends Component {
         ? profile.githubUsername
         : "";
       profile.bio = !isEmpty(profile.bio) ? profile.bio : "";
+      profile.social = !isEmpty(profile.social) ? profile.social : {};
 
-      if (profile.social) {
-        profile.social.facebook = !isEmpty(profile.social.facebook)
-          ? profile.social.facebook
-          : "";
-        profile.social.twitter = !isEmpty(profile.social.twitter)
-          ? profile.social.twitter
-          : "";
-        profile.social.linkedIn = !isEmpty(profile.social.linkedIn)
-          ? profile.social.linkedIn
-          : "";
-        profile.social.instagram = !isEmpty(profile.social.instagram)
-          ? profile.social.instagram
-          : "";
-      }
+      profile.social.facebook = !isEmpty(profile.social.facebook)
+        ? profile.social.facebook
+        : "";
+      profile.social.twitter = !isEmpty(profile.social.twitter)
+        ? profile.social.twitter
+        : "";
+      profile.social.linkedIn = !isEmpty(profile.social.linkedIn)
+        ? profile.social.linkedIn
+        : "";
+      profile.social.instagram = !isEmpty(profile.social.instagram)
+        ? profile.social.instagram
+        : "";
       // set component field state;
 
       this.setState({
@@ -94,10 +93,10 @@ class CreateProfile extends Component {
         skills: profile.skills,
         githubUsername: profile.githubUsername,
         bio: profile.bio,
-        facebook: profile.facebook,
-        twitter: profile.twitter,
-        linkedIn: profile.linkedIn,
-        instagram: profile.instagram
+        facebook: profile.social.facebook,
+        twitter: profile.social.twitter,
+        linkedIn: profile.social.linkedIn,
+        instagram: profile.social.instagram
       });
     }
   }
@@ -168,22 +167,22 @@ class CreateProfile extends Component {
   render() {
     const { errors, displaySocialInput } = this.state;
     let socialInput;
-    setInterval(() => {
-        if (this.props.profilePhoto) {
-            document.getElementsByClassName("profileImg")[0].src =
-              "/uploads/" + this.props.profilePhoto;
-          }
-    }, 100)
+    setTimeout(() => {
+      if (this.props.profilePhoto) {
+        document.getElementsByClassName("profileImg")[0].src =
+          "/uploads/" + this.props.profilePhoto;
+      }
+    }, 100);
 
     if (displaySocialInput) {
       socialInput = (
         <div>
-          <InputGroup
+        <InputGroup
             placeholder="Twitter url"
-            name="Twitter"
+            name="twitter"
             icon="fab fa-twitter"
             value={this.state.twitter}
-            onTagInput={this.getTagInput}
+            onChange={this.onChange}
             error={errors.twitter}
           />
 
@@ -220,7 +219,7 @@ class CreateProfile extends Component {
     }
     // Select options for status
     const options = [
-      { label: "* Select Professional Status", value: 0 },
+      { label: "* Select Professional Status", value: "Select Professional Status" },
       { label: "Developer", value: "Developer" },
       { label: "Junior Developer", value: "Junior Developer" },
       { label: "Senior Developer", value: "Senior Developer" },
@@ -249,7 +248,7 @@ class CreateProfile extends Component {
                       <img
                         src="/uploads/profile.png"
                         style={{ width: "20%" }}
-                        className="rounded-circle image-responsive mx-auto d-block profileImg"
+                        className="image-responsive mx-auto d-block profileImg"
                         alt="sample profile photo"
                       />
                       <div className="overlay">
@@ -329,6 +328,16 @@ class CreateProfile extends Component {
                   info="Tell us your skills"
                   error={errors.skills}
                   tags={this.state.skills}
+                />
+
+                <TextFieldGroup
+                  placeholder="Website"
+                  name="website"
+                  type="text"
+                  value={this.state.website}
+                  onChange={this.onChange}
+                  error={errors.website}
+                  info="Enter your website"
                 />
 
                 <TextFieldGroup
