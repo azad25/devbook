@@ -31,6 +31,7 @@ var upload = multer({
 
 // import models
 const User = require("../../models/User");
+const Profile = require("../../models/profile");
 
 // import validator
 const valProfile = require("../../validator/profile");
