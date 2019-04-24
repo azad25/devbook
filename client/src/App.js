@@ -24,6 +24,8 @@ import AddExperience from "./components/add-credentials/AddExperience";
 import AddEducation from "./components/add-credentials/AddEducation";
 import Profiles from "./components/profiles/Profiles";
 import Profile from "./components/profile/Profile";
+import Posts from "./components/posts/Posts";
+import Post from "./components/post/Post";
 
 // check for token
 
@@ -77,22 +79,12 @@ class App extends Component {
                 component={props => <Profile {...props} />}
               />
               <PrivateRoute exact path="/dashboard" component={Dashboard} />
-              <PrivateRoute
-                path="/create-profile"
-                component={CreateProfile}
-              />
-              <PrivateRoute
-                path="/edit-profile"
-                component={EditProfile}
-              />
-              <PrivateRoute
-                path="/add-experience"
-                component={AddExperience}
-              />
-              <PrivateRoute
-                path="/add-education"
-                component={AddEducation}
-              />
+              <PrivateRoute path="/create-profile" component={CreateProfile} />
+              <PrivateRoute path="/edit-profile" component={EditProfile} />
+              <PrivateRoute path="/add-experience" component={AddExperience} />
+              <PrivateRoute path="/add-education" component={AddEducation} />
+              <PrivateRoute exact path="/feed" component={props => <Posts {...props} />} />
+              <PrivateRoute exact path="/post/:id" component={props => <Post {...props} />} />
               <Route component={NotFound} />
             </Switch>
             <Footer />

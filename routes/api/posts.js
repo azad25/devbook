@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
   Post.find()
     .sort({ data: -1 })
     .then(posts => res.json(posts))
-    .catch(err => res.status(400).json(err));
+    .catch(err => res.status(400).json({ nopostsfound: 'No posts found' }));
 });
 
 //@route GET /api/posts/user/:user_id

@@ -17,7 +17,7 @@ class Navbar extends Component {
       img: ""
     };
   }
-  componentWillMount(){
+  componentWillMount() {
     this.props.getProfilePhoto();
   }
   onLogoutClick(e) {
@@ -25,9 +25,9 @@ class Navbar extends Component {
     this.props.clearCurrentProfile();
     this.props.logoutUser(this.props.history);
   }
-  onAvatarClick(e){
+  onAvatarClick(e) {
     e.preventDefault();
-    this.props.history.push('/dashboard')
+    this.props.history.push("/dashboard");
   }
   render() {
     const { isAuthenticated, user } = this.props.auth;
@@ -39,6 +39,11 @@ class Navbar extends Component {
 
     const authLinks = (
       <ul className="navbar-nav ml-auto">
+        <li className="nav-item">
+          <Link className="nav-link" to="/feed">
+            Post Feed
+          </Link>
+        </li>
         <li className="nav-item">
           <a
             href={link}
