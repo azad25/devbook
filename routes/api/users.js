@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
 const secret = require("../../config/keys").secretOrKey;
+
 const User = require("../../models/User");
 
 const valReg = require("../../validator/register");
