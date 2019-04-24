@@ -16,3 +16,8 @@ Built WIth
 
 ![alt text](https://raw.githubusercontent.com/azad25/devbook/master/sc1.png)
 
+Sample user
+
+* email - ferdousazad@gmail.com
+* password - password
+
