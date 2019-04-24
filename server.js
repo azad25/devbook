@@ -1,7 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyparser = require("body-parser");
-const logger = require("morgan");
 const passport = require("passport");
 const cors = require("cors");
 const path = require('path');
@@ -19,9 +18,6 @@ const posts = require("./routes/api/posts");
 // body parser middleware
 app.use(bodyparser.json({ limit: "50mb" }))
 app.use(bodyparser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }))
-
-// app logger
-app.use(logger("dev"));
 
 //db config
 const db = require("./config/keys").mongoURI;
