@@ -11,6 +11,7 @@ Built WIth
 * Bootstrap 4
 * Passport
 * Json web Token
+* Multer (file upload)
 
 ##Screenshot
 
