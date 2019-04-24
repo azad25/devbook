@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
   Post.find()
     .sort({ data: -1 })
     .then(posts => res.json(posts))
-    .catch(err => res.status(400).json({ nopostsfound: 'No posts found' }));
+    .catch(err => res.status(400).json({ nopostsfound: "No posts found" }));
 });
 
 //@route GET /api/posts/user/:user_id
@@ -33,14 +33,21 @@ router.get("/user/:user_id", (req, res) => {
     .catch(err => res.status.json({ noprofilefound: true }));
 });
 
-//@route GET /api/posts/:post_id
-//@desc get post by post id
-//@access public
-
-router.get("/:post_id", (req, res) => {
-  Post.findById({ _id: req.params.post_id })
-    .then(post => res.json(post))
-    .catch(err => res.status(400).json({ nopostfound: true }));
+// @route   GET api/posts/:id
+// @desc    Get post by id
+// @access  Public
+router.get("/:id", (req, res) => {
+  Post.findById(req.params.id)
+    .then(post => {
+      if (post) {
+        res.json(post);
+      } else {
+        res.status(404).json({ nopostfound: "No post found with that ID" });
+      }
+    })
+    .catch(err =>
+      res.status(404).json({ nopostfound: "No post found with that ID" })
+    );
 });
 
 //@route POST /api/posts
@@ -196,8 +203,7 @@ router.delete(
         .then(post => {
           // check if user has a comment
           if (
-            post.comments
-              .filter(x => x.user.toString() === req.user.id)
+            post.comments.filter(x => x.user.toString() === req.user.id)
               .length === 0
           ) {
             return res.status(400).json({ nousercomment: true });
@@ -205,9 +211,9 @@ router.delete(
           // return error
           //check if comment id exists
           if (
-            post.comments
-              .filter(t => t._id.toString() === req.params.comment_id)
-              .length === 0
+            post.comments.filter(
+              t => t._id.toString() === req.params.comment_id
+            ).length === 0
           ) {
             return res.status(400).json({ nocomment: true });
           }

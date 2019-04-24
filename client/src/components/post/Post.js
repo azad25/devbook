@@ -6,6 +6,7 @@ import PostItem from '../posts/PostItem';
 import CommentForm from './CommentForm';
 import CommentFeed from './CommentFeed';
 import Spinner from '../common/Spinner';
+
 import { getPost } from '../../actions/postActions';
 
 class Post extends Component {
@@ -15,7 +16,7 @@ class Post extends Component {
 
   render() {
     const { post, loading } = this.props.post;
-    let postContent;
+    let postContent='';    
 
     if (post === null || loading || Object.keys(post).length === 0) {
       postContent = <Spinner />;
@@ -52,7 +53,7 @@ Post.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  post: state.post
+  post: state.posts
 });
 
 export default connect(mapStateToProps, { getPost })(Post);
