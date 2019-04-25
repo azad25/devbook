@@ -24,10 +24,6 @@ class Login extends Component {
     nextProps.errors && this.setState({ errors: nextProps.errors });
   }
 
-  componentWillMount() {
-    this.props.isAuthenticated && this.props.history.push("/dashboard");
-  }
-
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
@@ -42,6 +38,11 @@ class Login extends Component {
   }
   render() {
     const { errors } = this.state;
+    const { auth } = this.props;
+
+    if(auth.isAuthenticated){
+      this.props.history.push("/dashboard")
+    }
 
     return (
       <div className="login screen-height">
