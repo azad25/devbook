@@ -245,7 +245,7 @@ router.post(
 );
 
 //@route GET /api/profile/photo
-//@desc upload profile photo
+//@desc get profile photo from localstorage
 //@access private
 
 router.get(
@@ -257,6 +257,28 @@ router.get(
       .then(response => {
         if (response) {
           res.send(response.photo.path);
+        } else {
+          res.status(400).json({ error: "User photo not found" });
+        }
+      })
+      .catch(err => res.status(400).json(err));
+  }
+);
+
+//@route GET /api/profile/link/photo
+//@desc get profile photo from db
+//@access private
+
+router.get(
+  "/link/photo",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    Profile.findOne({ user: req.user.id })
+      .select("photo.path")
+      .then(response => {
+        if (response) {
+          res.contentType(response.photo.contentType);
+          res.send(response.photo.image);
         } else {
           res.status(400).json({ error: "User photo not found" });
         }

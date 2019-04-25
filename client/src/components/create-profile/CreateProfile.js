@@ -212,7 +212,7 @@ class CreateProfile extends Component {
                         <button
                           type="button"
                           onClick={this.fileSelect.bind(this)}
-                          className="icon"
+                          className="icon text-dark"
                         >
                           <i className="fas fa-camera" />
                         </button>
