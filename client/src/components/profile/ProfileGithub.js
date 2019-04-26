@@ -41,9 +41,9 @@ class ProfileGithub extends Component {
           <div className="row">
             <div className="col-md-6">
               <h4>
-                <Link to={"http://"+repo.html_url} className="text-dark" target="_blank">
+                <a href={"http://"+repo.html_url} className="text-dark" target="_blank">
                   {repo.name}
-                </Link>
+                </a>
               </h4>
               <p>{repo.description}</p>
             </div>
